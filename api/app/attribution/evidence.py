@@ -1,7 +1,6 @@
-"""Stage D — Evidence collection (Phase 10).
+"""Step D — Collect evidence.
 
-Collects evidence snippets that downstream stages consume. The
-collection is the place where we:
+Gathers the supporting details that later steps use for scoring:
 
 - attach mixer / bridge / VASP flags to each candidate (already done
   in discovery, this stage *consolidates* them).
@@ -10,8 +9,8 @@ collection is the place where we:
 - compute a simple ``label_source_agreement`` signal (1.0 if both the
   provider and the dataset agree on the terminal role).
 
-Stage D never fabricates evidence — it only re-shapes what discovery
-already collected.
+This step does not create new evidence — it just organizes what the
+search already found.
 """
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-"""FastAPI dependency helpers (Phase 25)."""
+"""FastAPI dependency helpers."""
 
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ RedisDep = Annotated[object, Depends(get_redis)]
 
 
 async def get_provider_registry(request: Request) -> ProviderRegistry:
-    """Return the active :class:`ProviderRegistry` (Phase 20 / 22)."""
+    """Return the active :class:`ProviderRegistry`."""
     return request.app.state.provider_registry
 
 
@@ -76,7 +76,7 @@ CurrentInvestigatorDep = Annotated[
 
 
 def require_role_stub(role: str):
-    """Factory that returns a dependency enforcing a role (Phase 25 RBAC)."""
+    """Factory that returns a dependency enforcing a role."""
     return require_role(role)
 
 

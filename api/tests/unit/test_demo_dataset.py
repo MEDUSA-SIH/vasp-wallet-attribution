@@ -1,4 +1,4 @@
-"""Demo dataset unit tests (Phase 22)."""
+"""Demo dataset tests."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Unit tests for the attribution engine stages (Phase 10)."""
+"""Attribution engine step tests."""
 
 from __future__ import annotations
 
@@ -272,7 +272,7 @@ def test_explain_uses_mixer_phrasing() -> None:
     compute_confidence([s])
     out = explain([s])
     assert "mixer" in out["terminal_mixer"].lower()
-    assert "Phase 14" in out["terminal_mixer"]
+    assert "cannot be reliably traced" in out["terminal_mixer"].lower()
 
 
 # --- Engine (A→H) ------------------------------------------------------------

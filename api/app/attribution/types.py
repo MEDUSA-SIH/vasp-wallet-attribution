@@ -1,13 +1,13 @@
-"""Shared attribution types (Phase 10 + Phase 3.3).
+"""Shared types for the attribution engine.
 
-These dataclasses flow through Stages A→H. They are intentionally
-**plain dataclasses** (not Pydantic models) — internal to the engine.
-The FastAPI layer translates them into Pydantic schemas.
+These dataclasses flow through the 8 steps. They are intentionally
+plain dataclasses (not Pydantic models) — internal to the engine.
+The web layer translates them into API schemas.
 
-Phase 3.3 invariant: ``proximity_rank`` and ``confidence_score`` are
-two independent numbers. The engine NEVER blends them into a single
-"final score" for ranking (Stage G sorts by ``proximity_rank`` and
-exposes ``confidence_score`` alongside).
+Key rule: ``proximity_rank`` (how close) and ``confidence_score``
+(how trustworthy) are two independent numbers. The engine never blends
+them into a single final score — it sorts by proximity and shows
+confidence alongside.
 """
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ from typing import Any
 
 
 class EvidenceTier(IntEnum):
-    """Phase 5 evidence tiers (1 = strongest, 4 = weakest)."""
+    """Evidence tiers — 1 is strongest, 4 is weakest, 99 means not enough evidence."""
 
     TIER_1_DEPOSIT_LABEL = 1  # Direct VASP deposit tag from exchange
     TIER_2_HOT_WALLET_LABEL = 2  # Tagged hot-wallet cluster
@@ -51,9 +51,9 @@ class EvidenceItem:
 
 @dataclass(slots=True)
 class Candidate:
-    """A candidate path from the suspect to a terminal address.
+    """A possible path from the suspect wallet to an end point.
 
-    Stage A produces one of these per terminal reached by the BFS.
+    The search step creates one of these for each end point it finds.
     """
 
     suspect_address: str
@@ -107,11 +107,11 @@ class Candidate:
 
 @dataclass(slots=True)
 class ScoredCandidate:
-    """A candidate with both proximity and confidence scored (Phase 3.3).
+    """A candidate with scores.
 
-    ``proximity_rank`` is a weighted-graph distance score (lower = closer).
-    ``confidence_score`` is a 0..100 banded confidence.
-    They are exposed independently and never blended.
+    ``proximity_rank`` — how close (lower is closer).
+    ``confidence_score`` — how trustworthy (0–100).
+    The two are kept separate and never mixed.
     """
 
     candidate: Candidate
@@ -121,7 +121,7 @@ class ScoredCandidate:
     confidence_score: float = 0.0
     confidence_band: str = "low"  # "low" | "medium" | "high"
     evidence_tier: EvidenceTier = EvidenceTier.TIER_NONE
-    explanation: str = ""  # Stage H narrative
+    explanation: str = ""  # plain-English explanation
 
     def as_dict(self) -> dict[str, Any]:
         return {

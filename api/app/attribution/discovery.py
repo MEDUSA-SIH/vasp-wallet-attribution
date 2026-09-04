@@ -1,16 +1,14 @@
-"""Stage A — Candidate discovery (Phase 10 / Phase 22).
+"""Step A — Find candidate wallets.
 
-Bounded forward BFS from the suspect address. Stops at the configured
-hop budget OR when a node has already been visited. Returns a list of
-:class:`Candidate` objects, each carrying the full path of addresses
-and edges, plus tag annotations for VASP / mixer / bridge.
+Walks the transaction graph starting from the suspect address, step by
+step (breadth-first search). Stops when it hits the max number of hops
+or revisits an address. Returns a list of candidates, each with the full
+path and notes whether the end point is an exchange (VASP), mixer, bridge,
+or just a dead end.
 
-The stage is **chain-aware**: when a hop carries a
-``bridge_target_chain`` marker, the BFS follows the bridge to the
-target chain via the appropriate provider.
-
-The stage honours the Phase 14 hard rule on mixers: as soon as a mixer
-is hit the BFS stops expanding past it (see :func:`_is_mixer`).
+If a hop is a bridge to another chain, the search continues on that chain.
+If a mixer is hit, the search stops there — we do not follow funds through
+a mixer because attribution past a mixer is unreliable.
 """
 
 from __future__ import annotations
@@ -167,8 +165,8 @@ async def run_discovery(
                 continue
 
             # Intermediary / hub / dead_end.
-            # Hub detection: if the address has very high degree and no
-            # VASP tag, stop expanding (Stage C applies the formal filter).
+            # Hub check: if the address touches many other wallets and has no
+            # exchange label, mark it as a hub and stop expanding there.
             if degree_lookup is not None and degree_lookup.degree(next_addr) > HUB_DEGREE_THRESHOLD:
                 candidates.append(
                     _candidate_for_terminal(

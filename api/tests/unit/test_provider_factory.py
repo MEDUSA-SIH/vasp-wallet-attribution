@@ -1,4 +1,4 @@
-"""Provider factory unit tests (Phase 20 / 22)."""
+"""Provider factory tests."""
 
 from __future__ import annotations
 

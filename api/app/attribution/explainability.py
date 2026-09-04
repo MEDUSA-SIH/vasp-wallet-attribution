@@ -1,4 +1,4 @@
-"""Stage H — Explainability (Phase 10).
+"""Step H — Write plain-English explanations.
 
 Produce a human-readable narrative per candidate. The narrative
 follows a fixed template so investigators see consistent phrasing,
@@ -28,7 +28,7 @@ def _narrative(s: ScoredCandidate) -> str:
     if cand.hits_mixer:
         lead = (
             f"Funds reached a known mixer ({cand.mixer_id}); attribution "
-            "stops here per Phase 14 hard rule."
+            "stops here — funds through a mixer cannot be reliably traced."
         )
     elif cand.terminal_role == "vasp" and cand.vasp_id:
         lead = (

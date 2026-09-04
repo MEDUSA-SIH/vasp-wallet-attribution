@@ -1,4 +1,4 @@
-"""Investigator model (Phase 8)."""
+"""Investigator model."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class Investigator(BaseModel, UUIDPrimaryKeyMixin, TimestampMixin):
-    """An LEA analyst who uses the system (Phase 8)."""
+    """An LEA analyst who uses the system."""
 
     __tablename__ = "investigators"
 

@@ -1,4 +1,4 @@
-"""API request log model (Phase 8)."""
+"""API request log model."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 
 class APIRequest(BaseModel, UUIDPrimaryKeyMixin):
-    """A request hit recorded for auditing / rate limiting (Phase 8)."""
+    """A request hit recorded for auditing / rate limiting."""
 
     __tablename__ = "api_requests"
 

@@ -1,18 +1,18 @@
-"""Attribution engine orchestrator (Phase 10).
+"""Attribution engine — runs the full investigation pipeline.
 
-Eight-stage pipeline:
+This runs 8 simple steps in order:
 
-    A  discovery.py        Forward BFS over the chain graph
-    B  traversal.py        Path reconstruction
-    C  filtering.py        Noise / dust / hub filtering
-    D  evidence.py         Evidence consolidation
-    E  scoring.py          Proximity rank (weighted graph distance)
-    F  scoring.py          Confidence score (equal-weight components)
-    G  ranking.py          Sort by proximity_rank; pick outcome
-    H  explainability.py   Plain-language narrative per candidate
+    A  discovery        Find candidate wallets by walking the transaction graph
+    B  traversal        Rebuild the full path for each candidate
+    C  filtering        Remove noise (dust, duplicates, high-degree hubs)
+    D  evidence         Gather supporting evidence for each candidate
+    E  scoring          Compute proximity (how close the candidate is)
+    F  scoring          Compute confidence (how trustworthy the match is)
+    G  ranking          Sort by proximity and pick the outcome
+    H  explainability   Write a plain-English explanation for each result
 
-The :class:`AttributionEngine` is the only public entry point. Sub-modules
-are NOT considered public — consumers must use the engine.
+Use :class:`AttributionEngine` — it is the only public entry point.
+The individual stage modules are internal details.
 """
 
 from __future__ import annotations
@@ -33,7 +33,7 @@ from app.providers.base import ProviderRegistry
 
 @dataclass(slots=True)
 class AttributionResult:
-    """Final output of an attribution run (Phase 10)."""
+    """Final result of an attribution run."""
 
     case_id: UUID | None
     suspect_address: str
@@ -45,7 +45,7 @@ class AttributionResult:
 
 
 class AttributionEngine:
-    """Drives the eight-stage attribution pipeline (Phase 10)."""
+    """Runs the 8-step attribution pipeline and returns a ranked result."""
 
     def __init__(
         self,
@@ -65,8 +65,8 @@ class AttributionEngine:
         case_id: UUID | None = None,
         degree_lookup: DegreeLookup | None = None,
     ) -> AttributionResult:
-        """Execute stages A→H and return a structured result."""
-        # Stage A — discovery.
+        """Run all 8 stages and return the final result."""
+        # Step A — search the graph for candidate wallets.
         raw_candidates = await run_discovery(
             suspect_address,
             registry=registry,
@@ -75,20 +75,20 @@ class AttributionEngine:
             max_candidates=self.max_candidates,
             degree_lookup=degree_lookup,
         )
-        # Stage B — path reconstruction.
+        # Step B — rebuild the full path for each candidate.
         scored = reconstruct(raw_candidates)
-        # Stage C — filtering.
+        # Step C — filter out noise (dust, duplicates, hubs).
         scored = apply_filters(scored, degree_lookup=degree_lookup)
-        # Stage D — evidence collection.
+        # Step D — collect supporting evidence.
         scored = collect_evidence(scored)
-        # Stage E — proximity rank.
+        # Step E — score how close each candidate is.
         scored = compute_proximity(scored)
-        # Stage F — confidence score.
+        # Step F — score how confident we are in each candidate.
         scored = compute_confidence(scored)
-        # Stage G — ranking + outcome.
+        # Step G — sort by proximity and decide the outcome.
         ranked = rank(scored)
         outcome, insufficient = classify_outcome(ranked)
-        # Stage H — explainability.
+        # Step H — write a plain-English explanation.
         explanations = explain(ranked)
         return AttributionResult(
             case_id=case_id,

@@ -1,4 +1,4 @@
-"""Report orchestration service (Phase 17)."""
+"""Report service — builds investigation reports."""
 
 from __future__ import annotations
 

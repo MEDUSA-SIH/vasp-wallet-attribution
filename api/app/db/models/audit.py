@@ -1,4 +1,4 @@
-"""Audit event model (Phase 8 + Phase 25)."""
+"""Audit event model."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 
 class AuditEvent(BaseModel, UUIDPrimaryKeyMixin):
-    """An immutable audit log entry (Phase 25)."""
+    """An immutable audit log entry."""
 
     __tablename__ = "audit_events"
 

@@ -1,12 +1,7 @@
-"""Attribution orchestration service (Phase 10 + Phase 11).
+"""Attribution service — connects the API to the engine.
 
-Public surface (locked):
-
-    :meth:`AttributionService.run_demo_attribution`
-
-The method is the smoke endpoint backing ``POST /api/v1/attribution/run``.
-It delegates the heavy lifting to :class:`AttributionEngine` and then
-adapts the result into the wire-format :class:`AttributionRunResult`.
+The main method ``run_demo_attribution`` is used by ``POST /api/v1/attribution/run``.
+It runs the attribution engine and converts the result into the API response format.
 """
 
 from __future__ import annotations
@@ -98,8 +93,8 @@ class AttributionService:
             started_at=started,
             finished_at=finished,
             notes=[
-                "Phase 10 engine: Stages A-H implemented (see docs/development.md).",
-                "Scoring is an explainable MVP — production formulas land in WP-15.",
+                "Attribution engine with 8 stages is implemented — see docs/development.md.",
+                "Scoring is a simple, explainable first version; future improvements will refine the formulas.",
             ],
         )
 

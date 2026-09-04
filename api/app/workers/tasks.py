@@ -1,4 +1,4 @@
-"""Background task placeholders (Phase 23)."""
+"""Background tasks — jobs that run outside the request."""
 
 from __future__ import annotations
 

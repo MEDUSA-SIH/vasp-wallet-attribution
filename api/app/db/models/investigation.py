@@ -1,4 +1,4 @@
-"""Investigation run record (Phase 8 + Phase 10)."""
+"""Investigation run record."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 
 class Investigation(BaseModel, UUIDPrimaryKeyMixin):
-    """A single attribution run for a case (Phase 10)."""
+    """A single attribution run for a case."""
 
     __tablename__ = "investigations"
 

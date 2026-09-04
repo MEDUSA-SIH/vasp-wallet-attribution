@@ -1,4 +1,4 @@
-"""Report model (Phase 8 + Phase 17)."""
+"""Report model."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class Report(BaseModel, UUIDPrimaryKeyMixin, TimestampMixin):
-    """An investigation report (Phase 17)."""
+    """An investigation report."""
 
     __tablename__ = "reports"
 

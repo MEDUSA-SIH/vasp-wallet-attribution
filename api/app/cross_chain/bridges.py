@@ -1,4 +1,4 @@
-"""Bridge detection (Phase 13)."""
+"""Bridge detection."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 @dataclass(slots=True, frozen=True)
 class BridgeDetector:
-    """Static catalog of known bridges (Phase 13)."""
+    """Static catalog of known bridges."""
 
     name: str
     source_chains: tuple[str, ...]

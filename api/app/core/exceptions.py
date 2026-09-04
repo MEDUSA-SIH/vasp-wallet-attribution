@@ -1,4 +1,4 @@
-"""Application-level exception types & FastAPI handlers (Phase 25)."""
+"""App errors — custom exceptions and handlers."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ class NotFoundError(Exception):
 
 
 class AuthorizationError(Exception):
-    """Raised on RBAC / authorization failures (Phase 25)."""
+    """Raised on RBAC / authorization failures."""
 
 
 class ValidationError(Exception):
@@ -62,7 +62,7 @@ async def validation_error_handler(request: Request, exc: ValidationError) -> JS
 
 
 def register_exception_handlers(app: FastAPI) -> None:
-    """Attach all custom exception handlers to a FastAPI app (Phase 25)."""
+    """Attach all custom exception handlers to a FastAPI app."""
     app.add_exception_handler(AttributionError, attribution_error_handler)
     app.add_exception_handler(ProviderError, provider_error_handler)
     app.add_exception_handler(NotFoundError, not_found_error_handler)

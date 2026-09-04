@@ -1,4 +1,4 @@
-"""Attribution model (Phase 8 + Phase 10)."""
+"""Attribution model."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 
 class Attribution(BaseModel, UUIDPrimaryKeyMixin, TimestampMixin):
-    """A wallet → VASP attribution record (Phase 10)."""
+    """A wallet → VASP attribution record."""
 
     __tablename__ = "attributions"
 

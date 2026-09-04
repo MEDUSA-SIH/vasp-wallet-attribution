@@ -1,4 +1,4 @@
-"""Structured logging via structlog (Phase 25)."""
+"""Logging setup — structured logs for the app."""
 
 from __future__ import annotations
 
@@ -42,7 +42,7 @@ def configure_logging() -> None:
 
 
 def get_logger(name: str | None = None, **initial_values: Any) -> structlog.stdlib.BoundLogger:
-    """Return a bound structlog logger (Phase 25)."""
+    """Return a bound structlog logger."""
     logger = structlog.get_logger(name)
     if initial_values:
         logger = logger.bind(**initial_values)

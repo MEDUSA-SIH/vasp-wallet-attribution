@@ -1,4 +1,4 @@
-"""Tron provider stub (Phase 20)."""
+"""Tron provider stub."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from app.providers.demo import raise_not_implemented
 
 
 class TronProvider(BlockchainProvider):
-    """Tron provider stub (Phase 20)."""
+    """Tron provider stub."""
 
     chain_code = "tron"
 

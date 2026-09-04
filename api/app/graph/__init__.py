@@ -1,4 +1,4 @@
-"""Graph data model & NetworkX-backed store (Phase 6 + Phase 11)."""
+"""Graph data model & NetworkX-backed store."""
 
 from app.graph.algorithms import (
     bfs,

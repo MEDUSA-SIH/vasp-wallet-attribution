@@ -1,4 +1,4 @@
-"""Wallet model (Phase 8)."""
+"""Wallet model."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 
 class Wallet(BaseModel, UUIDPrimaryKeyMixin, TimestampMixin):
-    """An on-chain wallet address (Phase 8)."""
+    """An on-chain wallet address."""
 
     __tablename__ = "wallets"
 

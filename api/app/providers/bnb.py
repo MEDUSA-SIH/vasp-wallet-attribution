@@ -1,4 +1,4 @@
-"""BNB Chain provider stub (Phase 20)."""
+"""BNB Chain provider stub."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from app.providers.demo import raise_not_implemented
 
 
 class BnbProvider(BlockchainProvider):
-    """BNB Chain provider stub (Phase 20)."""
+    """BNB Chain provider stub."""
 
     chain_code = "bnb"
 

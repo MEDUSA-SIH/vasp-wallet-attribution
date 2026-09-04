@@ -1,4 +1,4 @@
-"""Risk alert evaluation (Phase 14)."""
+"""Risk alert checks."""
 
 from __future__ import annotations
 

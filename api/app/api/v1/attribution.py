@@ -1,4 +1,4 @@
-"""Attribution router (Phase 10 + Phase 11).
+"""Attribution router.
 
 Smoke endpoint backed by :class:`AttributionService`:
 
@@ -13,7 +13,7 @@ The response is the wire-format ``AttributionRunResult`` produced by
 :meth:`AttributionService.run_demo_attribution`. Each candidate carries
 ``proximity_rank``, ``confidence_score`` (0..100) and ``confidence_band``
 (``low`` / ``medium`` / ``high``), plus an ``evidence_tier`` integer
-(Phase 5, 1..4) and a plain-language ``explanation`` (Phase 10 Stage H).
+and a plain-language ``explanation``.
 """
 
 from __future__ import annotations
@@ -32,7 +32,7 @@ _service = AttributionService()
 
 
 class AttributionRunRequest(BaseModel):
-    """Request body for ``POST /attribution/run`` (Phase 10 / WP-11)."""
+    """Request body for ``POST /attribution/run``."""
 
     suspect_address: str = Field(min_length=1, max_length=255)
     chain: str = Field(default="ethereum", max_length=32)
@@ -63,7 +63,8 @@ async def run_attribution_endpoint(
     payload: AttributionRunRequest,
     registry: ProviderRegistryDep,
 ) -> AttributionRunResponse:
-    """Smoke endpoint used by the offline demo path (WP-11 / WP-12-17)."""
+    """Run attribution for a suspect address on a given chain."""
+
     try:
         registry.get(payload.chain)
     except KeyError as exc:

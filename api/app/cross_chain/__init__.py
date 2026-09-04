@@ -1,4 +1,4 @@
-"""Cross-chain bridge helpers (Phase 13)."""
+"""Cross-chain bridge helpers."""
 
 from app.cross_chain.bridges import (
     BridgeDetector,

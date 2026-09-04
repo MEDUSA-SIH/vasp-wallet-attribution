@@ -5,7 +5,7 @@ Revises:
 Create Date: 2026-09-04 00:00:00
 
 Stage-0 scaffold migration: declares all tables defined in app/db/models/
-(Phase 8 DDL). Bodies will be expanded in later stages; this revision
+(database tables). Bodies will be expanded in later stages; this revision
 creates the full skeleton so the database is structurally complete.
 
 """

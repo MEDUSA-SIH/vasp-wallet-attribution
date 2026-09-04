@@ -1,33 +1,27 @@
-"""Offline demo provider (Phase 21 / Phase 22).
+"""Offline demo provider — runs without live blockchain APIs.
 
-This provider is the entry-point for the **entire** offline development
-path. It loads the synthetic JSON fixtures under ``data/synthetic/``,
-builds in-memory indexes and serves queries via the public
-:class:`app.providers.base.BlockchainProvider` ABC.
+This is the entry-point for offline development and testing. It loads
+the synthetic JSON fixtures under ``data/synthetic/`` (8 test cases),
+builds in-memory indexes and serves queries through the standard
+provider interface.
 
-Activation rule:
-    ``Settings.demo_mode is True`` ⇒ :func:`build_default_provider_registry`
-    registers this provider under every supported ``chain_code`` (BTC,
-    ETH, TRON, BNB, SOL, POLYGON). It is what :mod:`app.providers.factory`
-    hands back when DEMO_MODE is on.
+When demo mode is on, the factory registers this provider for every
+supported chain (BTC, ETH, TRON, BNB, SOL, POLYGON). No API keys needed.
 
-Public surface (extends the locked ABC):
+Public surface (extends the locked interface):
     ``get_balance``               – returns 0 (no real balances in demo)
     ``get_transactions``          – queries the in-memory tx index
     ``stream_transactions``       – same index, async iterator
     ``get_block_height``          – max(block_height) for the chain
     ``healthcheck``               – True if the in-memory dataset loaded
 
-Demo-only extra methods (NOT part of the locked contract — see
-``docs/contracts.md``):
-    ``get_address_labels``        – {address: [label, …]}
-    ``get_token_transfers``       – same shape as get_transactions for
-                                    token movements (MVP: returns native
-                                    transfers only)
+Extra demo-only helpers (not part of the locked contract):
+    ``get_address_labels``        – {address: [label, ...]}
+    ``get_token_transfers``       – token movements (currently same as transactions)
     ``get_block``                 – block metadata for a height
 
-The provider is **deterministic** – no I/O, no RNG. Re-running it with
-the same JSON files produces identical results.
+The provider is deterministic — no network, no randomness. Re-running
+with the same JSON files gives identical results.
 """
 
 from __future__ import annotations

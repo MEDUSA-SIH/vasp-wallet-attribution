@@ -1,4 +1,4 @@
-"""Case model (Phase 8)."""
+"""Case model."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 
 class Case(BaseModel, UUIDPrimaryKeyMixin):
-    """A single LEA investigation (Phase 8)."""
+    """A single LEA investigation."""
 
     __tablename__ = "cases"
 

@@ -1,4 +1,4 @@
-"""Evidence package service (Phase 16)."""
+"""Evidence service — builds evidence packages."""
 
 from __future__ import annotations
 

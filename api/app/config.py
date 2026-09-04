@@ -1,4 +1,4 @@
-"""Application configuration via pydantic-settings (Phase 25)."""
+"""App configuration — loads settings from environment variables."""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     """Centralised application settings.
 
     All values are loaded from environment variables (or `.env` in dev).
-    Phase 25 locks pydantic-settings as the source of truth.
+    Uses pydantic-settings as the single source of truth.
     """
 
     model_config = SettingsConfigDict(
@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     app_version: str = "0.1.0"
     app_env: Literal["local", "dev", "staging", "prod"] = "local"
     log_level: str = "INFO"
-    demo_mode: bool = True  # Phase 21/22 offline mode toggle
+    demo_mode: bool = True  # When true, use the local synthetic dataset (demo provider) instead of live chain APIs
 
     # ---- API -----------------------------------------------------------------
     api_host: str = "0.0.0.0"
@@ -56,7 +56,7 @@ class Settings(BaseSettings):
     redis_port: int = 6379
     redis_db: int = 0
 
-    # ---- Attribution engine (Phase 10) --------------------------------------
+    # ---- Attribution engine — main pipeline --------------------------------------
     attribution_max_hops: int = 5
     attribution_per_chain_budget: int = 3
     confidence_weight_proximity: float = 0.30
@@ -66,7 +66,7 @@ class Settings(BaseSettings):
     confidence_weight_clustering: float = 0.15
     confidence_min_threshold: float = 0.35
 
-    # ---- Provider toggles (Phase 20) -----------------------------------------
+    # ---- Provider toggles -----------------------------------------
     provider_bitcoin_enabled: bool = False
     provider_ethereum_enabled: bool = False
     provider_tron_enabled: bool = False
@@ -83,7 +83,7 @@ class Settings(BaseSettings):
     solana_provider_url: str = ""
     polygon_provider_url: str = ""
 
-    # ---- SAHYOG (Phase 7) ----------------------------------------------------
+    # ---- SAHYOG ----------------------------------------------------
     sahyog_base_url: str = ""
     sahyog_api_key: str = ""
     sahyog_enabled: bool = False
@@ -128,7 +128,7 @@ class Settings(BaseSettings):
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
-    """Return a cached Settings instance (Phase 25 dependency helper)."""
+    """Return a cached Settings instance."""
     return Settings()
 
 

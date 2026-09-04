@@ -1,4 +1,4 @@
-"""Stage G — Ranking (Phase 10 / Phase 3.3).
+"""Step G — Sort candidates and pick the outcome.
 
 Sort by ``proximity_rank`` ASCENDING (lower = closer). Show
 ``confidence_score`` alongside but **never blend them into a single
@@ -65,7 +65,7 @@ def classify_outcome(scored: list[ScoredCandidate]) -> tuple[str, bool]:
             return "single_candidate", False
         return "ranked_multi_candidate", False
     if mixer_candidates:
-        # Phase 14 hard rule: mixer = insufficient_evidence.
+        # Mixer rule: any mixer means not enough evidence.
         return "insufficient_evidence", True
     if hub_candidates and not dead_end_candidates:
         return "false_candidate_filtered", False

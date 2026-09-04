@@ -1,4 +1,4 @@
-"""Cases router (Phase 12)."""
+"""Cases API — manage investigations."""
 
 from __future__ import annotations
 

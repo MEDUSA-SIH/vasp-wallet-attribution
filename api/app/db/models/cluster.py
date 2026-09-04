@@ -1,4 +1,4 @@
-"""Cluster models (Phase 8)."""
+"""Cluster models."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class Cluster(BaseModel, UUIDPrimaryKeyMixin, TimestampMixin):
-    """A heuristic wallet cluster (Phase 8)."""
+    """A heuristic wallet cluster."""
 
     __tablename__ = "clusters"
 
@@ -26,7 +26,7 @@ class Cluster(BaseModel, UUIDPrimaryKeyMixin, TimestampMixin):
 
 
 class ClusterWallet(BaseModel):
-    """Many-to-many link between a cluster and its wallets (Phase 8)."""
+    """Many-to-many link between a cluster and its wallets."""
 
     __tablename__ = "cluster_wallets"
 

@@ -1,4 +1,4 @@
-"""VASP model (Phase 8)."""
+"""VASP model."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from app.db.base import BaseModel, TimestampMixin, UUIDPrimaryKeyMixin
 
 
 class VASP(BaseModel, UUIDPrimaryKeyMixin, TimestampMixin):
-    """A Virtual Asset Service Provider (Phase 8)."""
+    """A Virtual Asset Service Provider."""
 
     __tablename__ = "vasps"
 

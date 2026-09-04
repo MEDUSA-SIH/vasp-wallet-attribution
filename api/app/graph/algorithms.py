@@ -1,4 +1,4 @@
-"""Graph algorithm stubs (Phase 6 + Phase 11).
+"""Graph helpers — walk and search the transaction graph.
 
 Implementations are minimal placeholders; the contract (signatures,
 return types) is final so the engine can be wired without API churn.

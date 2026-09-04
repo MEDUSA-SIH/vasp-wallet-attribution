@@ -1,4 +1,4 @@
-"""Block model (Phase 8)."""
+"""Block model."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 
 class Block(BaseModel, UUIDPrimaryKeyMixin):
-    """A confirmed block (Phase 8)."""
+    """A confirmed block."""
 
     __tablename__ = "blocks"
 

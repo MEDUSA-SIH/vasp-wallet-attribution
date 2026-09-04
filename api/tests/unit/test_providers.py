@@ -1,4 +1,4 @@
-"""Provider abstraction unit tests (Phase 20)."""
+"""Provider abstraction unit tests."""
 
 from __future__ import annotations
 

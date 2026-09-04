@@ -1,4 +1,4 @@
-"""SQLAlchemy ORM models (Phase 8 DDL).
+"""SQLAlchemy ORM models (database tables).
 
 All models in this package mirror the Phase 8 DDL of the SIH26182 Technical
 Specification.  Module bodies are small and only define the schema; business

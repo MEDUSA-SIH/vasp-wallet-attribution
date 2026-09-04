@@ -1,4 +1,4 @@
-"""End-to-end attribution smoke tests (WP-11 + WP-12..WP-17).
+"""End-to-end attribution tests — 8 synthetic cases.
 
 These tests exercise the offline attribution path against all 8
 synthetic cases. They mirror the curl recipes documented in

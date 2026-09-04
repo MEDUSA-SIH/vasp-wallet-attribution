@@ -1,4 +1,4 @@
-"""Health endpoint smoke test (Phase 25)."""
+"""Health endpoint test."""
 
 from __future__ import annotations
 

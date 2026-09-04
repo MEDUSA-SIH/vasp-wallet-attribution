@@ -1,4 +1,4 @@
-"""Async DB session helpers (Phase 8)."""
+"""Database helpers — create sessions and connections."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ from app.config import get_settings
 
 
 def make_engine(url: str | None = None) -> AsyncEngine:
-    """Create the project's async SQLAlchemy engine (Phase 8)."""
+    """Create the project's async SQLAlchemy engine."""
     settings = get_settings()
     return create_async_engine(
         url or settings.database_url,
@@ -27,7 +27,7 @@ def make_engine(url: str | None = None) -> AsyncEngine:
 
 
 def get_session_factory(engine: AsyncEngine | None = None) -> async_sessionmaker[AsyncSession]:
-    """Return the configured ``async_sessionmaker`` (Phase 8)."""
+    """Return the configured ``async_sessionmaker``."""
     if engine is None:
         engine = make_engine()
     return async_sessionmaker(
