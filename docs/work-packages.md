@@ -34,14 +34,14 @@ list of touched files.
 | WP-08 | Polygon provider (live API integration)                                                             |             | `feature/polygon-provider-live`     | 20               | ⬜      |
 | WP-09 | DemoBlockchainProvider — synthetic dataset loader (CSV → CanonicalTransaction)                     |             | `feature/demo-seed-loader`          | 21, 22           | ⬜      |
 | WP-10 | Attribution Stage A — discovery (seed resolution against DB)                                        |             | `feature/attr-stage-a`              | 10               | ✅ (folded into WP-35) |
-| WP-11 | Synthetic dataset + offline DemoBlockchainProvider + smoke path                                     | @tejas      | `feature/synthetic-demo-provider`   | 21, 22           | 🟡 (PR open) |
+| WP-11 | Synthetic dataset + offline DemoBlockchainProvider + smoke path                                     | @tejas      | `feature/synthetic-demo-provider`   | 21, 22           | ✅      |
 | WP-12 | Attribution Stage B — graph traversal (BFS + Dijkstra)                                              |             | `feature/attr-stage-b`              | 10               | ✅ (folded into WP-35) |
 | WP-13 | Attribution Stage C — filtering (VASP heuristics, dust, mixers)                                  |             | `feature/attr-stage-c`              | 10               | ✅ (folded into WP-35) |
 | WP-14 | Attribution Stage D — evidence collection                                                          |             | `feature/attr-stage-d`              | 10               | ✅ (folded into WP-35) |
 | WP-15 | Attribution Stage E + F — proximity + confidence scoring                                           |             | `feature/attr-stage-ef`             | 10               | ✅ (folded into WP-35) |
 | WP-16 | Attribution Stage G — ranking                                                                       |             | `feature/attr-stage-g`              | 10               | ✅ (folded into WP-35) |
 | WP-17 | Attribution Stage H — explainability                                                                 |             | `feature/attr-stage-h`              | 10               | ✅ (folded into WP-35) |
-| WP-35 | Attribution engine core (Stages A–H end-to-end, MVP scoring) — **this stage**                       | @tejas      | `feature/attribution-engine-core`   | 10, 3.3          | 🟡 (PR open) |
+| WP-35 | Attribution engine core (Stages A–H end-to-end, MVP scoring) — **this stage**                       | @tejas      | `feature/attribution-engine-core`   | 10, 3.3          | ✅      |
 | WP-18 | Graph store — Neo4j backend (replace NetworkX)                                                     |             | `feature/graph-neo4j`               | 6, 11            | ⬜      |
 | WP-19 | Graph algorithms — community detection, page-rank, time-window traversal                           |             | `feature/graph-algos`               | 6, 11            | ⬜      |
 | WP-20 | Risk typologies — catalog expansion (mixer, peel-chain, nested VASP, bridge abuse)                 |             | `feature/risk-typologies`           | 14               | ⬜      |
@@ -90,3 +90,18 @@ list of touched files.
 - WP-03 | Bitcoin provider (live API integration) |  | `feature/btc-provider-live` | 20 | ⬜
 + WP-03 | Bitcoin provider (live API integration) | @your-handle | `feature/btc-provider-live` | 20 | 🟡
 ```
+
+---
+
+## Current team base
+
+**`main`** and **`develop`** are at commit `7a7bf50` (Day 1 stable base).
+
+Both branches include:
+- Stage 0 — monorepo scaffold (FastAPI / Docker / Alembic)
+- Stage 0.5 — team collab (CI / pre-commit / contracts)
+- Stage 1 — synthetic dataset + DemoBlockchainProvider + smoke endpoint
+- Stage 2 — attribution engine stages A–H with proximity + confidence scoring
+- CI formatting fix (ruff format)
+
+All CI checks are green: `ruff check`, `ruff format --check`, `pytest` (66/66), and import smoke tests. See the teammate start commands below.
