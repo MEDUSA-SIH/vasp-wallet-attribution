@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "description": "Fake mixer addresses used by the demo dataset.",
+  "mixers": [
+    {
+      "id": "mixer_demo_a",
+      "name": "DemoMixer A",
+      "address": "0xDEMO_case5_mixer_001",
+      "chain": "ethereum"
+    }
+  ]
+}

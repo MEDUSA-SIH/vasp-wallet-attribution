@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "description": "All addresses used by the 8 synthetic cases. Labels drive the demo attribution engine.",
+  "addresses": [
+    {"address": "0xDEMO_case1_suspect_001",  "chain": "ethereum", "case": "case1", "role": "suspect",        "label": "Suspect Case 1"},
+    {"address": "0xDEMO_case1_vasp_alpha_01","chain": "ethereum", "case": "case1", "role": "vasp_deposit",   "label": "VASP Alpha deposit", "vasp_id": "vasp_alpha"},
+
+    {"address": "0xDEMO_case2_suspect_001",  "chain": "ethereum", "case": "case2", "role": "suspect",        "label": "Suspect Case 2"},
+    {"address": "0xDEMO_case2_inter_a_001",  "chain": "ethereum", "case": "case2", "role": "intermediary",   "label": "Intermediary A"},
+    {"address": "0xDEMO_case2_vasp_bravo_01","chain": "ethereum", "case": "case2", "role": "vasp_deposit",   "label": "VASP Bravo deposit", "vasp_id": "vasp_bravo"},
+
+    {"address": "0xDEMO_case3_suspect_001",  "chain": "ethereum", "case": "case3", "role": "suspect",        "label": "Suspect Case 3"},
+    {"address": "0xDEMO_case3_inter_a_001",  "chain": "ethereum", "case": "case3", "role": "intermediary",   "label": "Intermediary A (C3)"},
+    {"address": "0xDEMO_case3_inter_b_001",  "chain": "ethereum", "case": "case3", "role": "intermediary",   "label": "Intermediary B (C3)"},
+    {"address": "0xDEMO_case3_inter_c_001",  "chain": "ethereum", "case": "case3", "role": "intermediary",   "label": "Intermediary C (C3)"},
+    {"address": "0xDEMO_case3_vasp_charlie_01","chain": "ethereum","case": "case3", "role": "vasp_deposit",   "label": "VASP Charlie deposit", "vasp_id": "vasp_charlie"},
+
+    {"address": "0xDEMO_case4_suspect_001",  "chain": "ethereum", "case": "case4", "role": "suspect",        "label": "Suspect Case 4"},
+    {"address": "0xDEMO_case4_inter_a_001",  "chain": "ethereum", "case": "case4", "role": "intermediary",   "label": "Intermediary A (C4)"},
+    {"address": "0xDEMO_case4_vasp_delta_01","chain": "ethereum", "case": "case4", "role": "vasp_deposit",   "label": "VASP Delta deposit", "vasp_id": "vasp_delta"},
+    {"address": "0xDEMO_case4_vasp_echo_01", "chain": "ethereum", "case": "case4", "role": "vasp_deposit",   "label": "VASP Echo deposit", "vasp_id": "vasp_echo"},
+    {"address": "0xDEMO_case4_vasp_foxtrot_01","chain": "ethereum","case": "case4","role": "vasp_deposit",   "label": "VASP Foxtrot deposit", "vasp_id": "vasp_foxtrot"},
+
+    {"address": "0xDEMO_case5_suspect_001",  "chain": "ethereum", "case": "case5", "role": "suspect",        "label": "Suspect Case 5"},
+    {"address": "0xDEMO_case5_mixer_001",    "chain": "ethereum", "case": "case5", "role": "mixer",          "label": "DemoMixer", "mixer_id": "mixer_demo_a"},
+
+    {"address": "0xDEMO_case6_suspect_001",  "chain": "ethereum", "case": "case6", "role": "suspect",        "label": "Suspect Case 6"},
+    {"address": "0xDEMO_case6_bridge_eth_01","chain": "ethereum", "case": "case6", "role": "bridge",         "label": "Bridge ETH→BTC contract", "bridge_id": "bridge_eth_btc"},
+    {"address": "DEMOcase6vasp_foxtrot_btc_01","chain": "bitcoin","case": "case6","role": "vasp_deposit",    "label": "VASP Foxtrot BTC deposit", "vasp_id": "vasp_foxtrot"},
+
+    {"address": "0xDEMO_case7_suspect_001",  "chain": "ethereum", "case": "case7", "role": "suspect",        "label": "Suspect Case 7"},
+    {"address": "0xDEMO_case7_hub_001",      "chain": "ethereum", "case": "case7", "role": "hub",            "label": "Noisy hub (C7)"},
+    {"address": "0xDEMO_case7_unrelated_01", "chain": "ethereum", "case": "case7", "role": "unrelated",      "label": "Unrelated wallet 1"},
+    {"address": "0xDEMO_case7_unrelated_02", "chain": "ethereum", "case": "case7", "role": "unrelated",      "label": "Unrelated wallet 2"},
+    {"address": "0xDEMO_case7_unrelated_03", "chain": "ethereum", "case": "case7", "role": "unrelated",      "label": "Unrelated wallet 3"},
+    {"address": "0xDEMO_case7_unrelated_04", "chain": "ethereum", "case": "case7", "role": "unrelated",      "label": "Unrelated wallet 4"},
+
+    {"address": "0xDEMO_case8_suspect_001",  "chain": "ethereum", "case": "case8", "role": "suspect",        "label": "Suspect Case 8"},
+    {"address": "0xDEMO_case8_deadend_001",  "chain": "ethereum", "case": "case8", "role": "dead_end",       "label": "Dead-end wallet (C8)"}
+  ]
+}

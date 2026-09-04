@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "description": "Fake VASP entities. All names are obviously demo-only — they MUST NOT match real exchanges.",
+  "vasps": [
+    {"id": "vasp_alpha",   "name": "VASP Alpha (DEMO)",   "country": "IN", "is_indian": true,  "regulator": "FIU-IND-DEMO"},
+    {"id": "vasp_bravo",   "name": "VASP Bravo (DEMO)",   "country": "IN", "is_indian": true,  "regulator": "FIU-IND-DEMO"},
+    {"id": "vasp_charlie", "name": "VASP Charlie (DEMO)", "country": "IN", "is_indian": true,  "regulator": "FIU-IND-DEMO"},
+    {"id": "vasp_delta",   "name": "VASP Delta (DEMO)",   "country": "SG", "is_indian": false, "regulator": "MAS-DEMO"},
+    {"id": "vasp_echo",    "name": "VASP Echo (DEMO)",    "country": "AE", "is_indian": false, "regulator": "VARA-DEMO"},
+    {"id": "vasp_foxtrot", "name": "VASP Foxtrot (DEMO)", "country": "US", "is_indian": false, "regulator": "FinCEN-DEMO"}
+  ]
+}
