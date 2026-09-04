@@ -18,12 +18,13 @@ Apply hard rules that drop candidates before scoring:
 The stage is intentionally conservative: it prefers to drop noise
 rather than invent scores.  Filtering never **adds** evidence.
 """
+
 from __future__ import annotations
 
 from app.attribution.types import ScoredCandidate
 
-MIN_HOP_AMOUNT = 0.005        # sub-cent hops are noise
-HUB_DEGREE_THRESHOLD = 4      # >4 distinct txs = hub
+MIN_HOP_AMOUNT = 0.005  # sub-cent hops are noise
+HUB_DEGREE_THRESHOLD = 4  # >4 distinct txs = hub
 
 
 def apply_filters(

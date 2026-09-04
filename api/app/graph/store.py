@@ -3,6 +3,7 @@
 The MVP relies on an in-process DiGraph. In later stages the same interface
 will be backed by Neo4j (see ``docs/phases-mapping.md``).
 """
+
 from __future__ import annotations
 
 from collections.abc import Iterable

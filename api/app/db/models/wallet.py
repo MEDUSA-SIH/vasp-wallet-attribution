@@ -1,4 +1,5 @@
 """Wallet model (Phase 8)."""
+
 from __future__ import annotations
 
 from datetime import datetime

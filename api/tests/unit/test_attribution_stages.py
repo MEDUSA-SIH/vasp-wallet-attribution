@@ -1,4 +1,5 @@
 """Unit tests for the attribution engine stages (Phase 10)."""
+
 from __future__ import annotations
 
 from app.attribution.engine import AttributionEngine, AttributionResult
@@ -24,7 +25,7 @@ def _scored_with(role: str, hops: int = 1, **kwargs) -> ScoredCandidate:
             HopEdge(
                 tx_hash=f"tx_{i}",
                 chain=kwargs.get("chain", "ethereum"),
-                from_address=f"hop{i-1}" if i else "suspect",
+                from_address=f"hop{i - 1}" if i else "suspect",
                 to_address=f"hop{i}",
                 timestamp="2024-01-01T10:00:00Z",
                 amount=1.0,
@@ -83,6 +84,7 @@ def test_filtering_demotes_high_degree_to_hub() -> None:
     class FakeDataset:
         def __init__(self, n: int) -> None:
             from app.providers.canonical import CanonicalTransaction
+
             self.tx_by_address = {
                 ("terminal_intermediary", "ethereum"): [
                     CanonicalTransaction(
@@ -281,6 +283,7 @@ def test_engine_result_has_independent_scores() -> None:
     reg = build_default_provider_registry()
     engine = AttributionEngine(max_hops=4)
     import asyncio
+
     result: AttributionResult = asyncio.run(
         engine.run("0xDEMO_case4_suspect_001", chain="ethereum", registry=reg)
     )
@@ -293,9 +296,8 @@ def test_engine_synthesises_evidence_items() -> None:
     reg = build_default_provider_registry()
     engine = AttributionEngine(max_hops=4)
     import asyncio
-    result = asyncio.run(
-        engine.run("0xDEMO_case1_suspect_001", chain="ethereum", registry=reg)
-    )
+
+    result = asyncio.run(engine.run("0xDEMO_case1_suspect_001", chain="ethereum", registry=reg))
     assert result.candidates, "expected at least one candidate"
     top = result.candidates[0]
     codes = {e.code for e in top.evidence}

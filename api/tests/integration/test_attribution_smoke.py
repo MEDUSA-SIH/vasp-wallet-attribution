@@ -4,6 +4,7 @@ These tests exercise the offline attribution path against all 8
 synthetic cases. They mirror the curl recipes documented in
 ``data/synthetic/README.md`` and ``docs/development.md``.
 """
+
 from __future__ import annotations
 
 from fastapi.testclient import TestClient

@@ -9,6 +9,7 @@ two independent numbers. The engine NEVER blends them into a single
 "final score" for ranking (Stage G sorts by ``proximity_rank`` and
 exposes ``confidence_score`` alongside).
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -19,11 +20,11 @@ from typing import Any
 class EvidenceTier(IntEnum):
     """Phase 5 evidence tiers (1 = strongest, 4 = weakest)."""
 
-    TIER_1_DEPOSIT_LABEL = 1       # Direct VASP deposit tag from exchange
-    TIER_2_HOT_WALLET_LABEL = 2    # Tagged hot-wallet cluster
-    TIER_3_BEHAVIORAL = 3          # Consolidation pattern, no exchange label
-    TIER_4_TOPOLOGICAL = 4         # Heuristic only (multi-hop proximity)
-    TIER_NONE = 99                 # No credible evidence (insufficient_evidence)
+    TIER_1_DEPOSIT_LABEL = 1  # Direct VASP deposit tag from exchange
+    TIER_2_HOT_WALLET_LABEL = 2  # Tagged hot-wallet cluster
+    TIER_3_BEHAVIORAL = 3  # Consolidation pattern, no exchange label
+    TIER_4_TOPOLOGICAL = 4  # Heuristic only (multi-hop proximity)
+    TIER_NONE = 99  # No credible evidence (insufficient_evidence)
 
 
 @dataclass(slots=True, frozen=True)
@@ -43,9 +44,9 @@ class HopEdge:
 class EvidenceItem:
     """A single piece of evidence supporting (or weakening) a candidate."""
 
-    code: str            # e.g. "vasp_label", "mixer_stop", "bridge_hop"
-    weight: float        # 0.0–1.0 contribution
-    detail: str          # plain-language note
+    code: str  # e.g. "vasp_label", "mixer_stop", "bridge_hop"
+    weight: float  # 0.0–1.0 contribution
+    detail: str  # plain-language note
 
 
 @dataclass(slots=True)
@@ -118,16 +119,15 @@ class ScoredCandidate:
     proximity_rank: float = 0.0
     proximity_breakdown: dict[str, float] = field(default_factory=dict)
     confidence_score: float = 0.0
-    confidence_band: str = "low"      # "low" | "medium" | "high"
+    confidence_band: str = "low"  # "low" | "medium" | "high"
     evidence_tier: EvidenceTier = EvidenceTier.TIER_NONE
-    explanation: str = ""            # Stage H narrative
+    explanation: str = ""  # Stage H narrative
 
     def as_dict(self) -> dict[str, Any]:
         return {
             "candidate": self.candidate.as_dict(),
             "evidence": [
-                {"code": e.code, "weight": e.weight, "detail": e.detail}
-                for e in self.evidence
+                {"code": e.code, "weight": e.weight, "detail": e.detail} for e in self.evidence
             ],
             "proximity_rank": self.proximity_rank,
             "proximity_breakdown": self.proximity_breakdown,
@@ -141,11 +141,11 @@ class ScoredCandidate:
 
 def _tier_label(tier: EvidenceTier) -> str:
     return {
-        EvidenceTier.TIER_1_DEPOSIT_LABEL:   "Tier 1 — Direct VASP deposit label",
+        EvidenceTier.TIER_1_DEPOSIT_LABEL: "Tier 1 — Direct VASP deposit label",
         EvidenceTier.TIER_2_HOT_WALLET_LABEL: "Tier 2 — Tagged hot-wallet cluster",
-        EvidenceTier.TIER_3_BEHAVIORAL:       "Tier 3 — Behavioral / consolidation only",
-        EvidenceTier.TIER_4_TOPOLOGICAL:      "Tier 4 — Heuristic / topological only",
-        EvidenceTier.TIER_NONE:               "Insufficient evidence",
+        EvidenceTier.TIER_3_BEHAVIORAL: "Tier 3 — Behavioral / consolidation only",
+        EvidenceTier.TIER_4_TOPOLOGICAL: "Tier 4 — Heuristic / topological only",
+        EvidenceTier.TIER_NONE: "Insufficient evidence",
     }.get(tier, "Unknown")
 
 

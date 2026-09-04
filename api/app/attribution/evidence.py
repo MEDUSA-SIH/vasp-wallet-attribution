@@ -13,6 +13,7 @@ collection is the place where we:
 Stage D never fabricates evidence — it only re-shapes what discovery
 already collected.
 """
+
 from __future__ import annotations
 
 from app.attribution.traversal import key_tx_hashes, path_integrity
@@ -29,20 +30,24 @@ def collect_evidence(scored: list[ScoredCandidate]) -> list[ScoredCandidate]:
     for s in scored:
         cand = s.candidate
         # Path integrity flag.
-        s.evidence.append(EvidenceItem(
-            code="path_integrity",
-            weight=path_integrity(cand),
-            detail=f"path_integrity = {path_integrity(cand):.2f}",
-        ))
+        s.evidence.append(
+            EvidenceItem(
+                code="path_integrity",
+                weight=path_integrity(cand),
+                detail=f"path_integrity = {path_integrity(cand):.2f}",
+            )
+        )
         # Key tx hashes are recorded as evidence context for the report.
         hashes = key_tx_hashes(cand)
         if hashes:
-            s.evidence.append(EvidenceItem(
-                code="key_tx_hashes",
-                weight=1.0,
-                detail=f"backing tx hashes: {', '.join(hashes[:5])}"
-                       f"{' …' if len(hashes) > 5 else ''}",
-            ))
+            s.evidence.append(
+                EvidenceItem(
+                    code="key_tx_hashes",
+                    weight=1.0,
+                    detail=f"backing tx hashes: {', '.join(hashes[:5])}"
+                    f"{' …' if len(hashes) > 5 else ''}",
+                )
+            )
     return scored
 
 

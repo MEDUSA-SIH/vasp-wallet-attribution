@@ -1,4 +1,5 @@
 """FastAPI dependency helpers (Phase 25)."""
+
 from __future__ import annotations
 
 from collections.abc import AsyncGenerator

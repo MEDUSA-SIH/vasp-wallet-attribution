@@ -19,6 +19,7 @@ Public surface (locked in :doc:`docs/contracts.md`):
 Sub-modules (discovery, traversal, …) are NOT public. Consumers must
 go through :class:`AttributionEngine`.
 """
+
 from app.attribution.engine import AttributionEngine, AttributionResult
 from app.attribution.types import (
     Candidate,

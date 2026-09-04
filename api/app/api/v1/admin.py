@@ -1,4 +1,5 @@
 """Admin router – health, settings, audit (Phase 25)."""
+
 from __future__ import annotations
 
 from fastapi import APIRouter, Request

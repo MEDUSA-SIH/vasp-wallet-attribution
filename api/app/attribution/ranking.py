@@ -14,6 +14,7 @@ Special outcomes:
 - Multiple VASP candidates → ``ranked_multi_candidate``.
 - Exactly one VASP candidate → ``single_candidate``.
 """
+
 from __future__ import annotations
 
 from app.attribution.types import ScoredCandidate

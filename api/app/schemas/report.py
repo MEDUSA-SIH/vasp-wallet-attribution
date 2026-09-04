@@ -1,4 +1,5 @@
 """Report schemas (Phase 17)."""
+
 from __future__ import annotations
 
 from uuid import UUID

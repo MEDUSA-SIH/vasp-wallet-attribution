@@ -1,4 +1,5 @@
 """Risk model (Phase 8 + Phase 14)."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -27,9 +28,7 @@ class Risk(BaseModel, UUIDPrimaryKeyMixin, TimestampMixin):
     score: Mapped[float] = mapped_column(Float, nullable=False)
     details: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
 
-    __table_args__ = (
-        Index("ix_risk_wallet", "wallet_id"),
-    )
+    __table_args__ = (Index("ix_risk_wallet", "wallet_id"),)
 
 
 __all__ = ["Risk"]

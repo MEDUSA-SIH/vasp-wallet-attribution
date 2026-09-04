@@ -3,6 +3,7 @@
 Real CRUD operations will live here.  Stage 0 exposes only ``ping`` so other
 modules can import without breaking.
 """
+
 from __future__ import annotations
 
 from uuid import UUID

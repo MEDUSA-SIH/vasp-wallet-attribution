@@ -29,6 +29,7 @@ Demo-only extra methods (NOT part of the locked contract — see
 The provider is **deterministic** – no I/O, no RNG. Re-running it with
 the same JSON files produces identical results.
 """
+
 from __future__ import annotations
 
 import json
@@ -98,9 +99,7 @@ class DemoDataset:
         """
         dataset_dir = dataset_dir or DEFAULT_DATASET_DIR
         if not dataset_dir.exists():
-            raise ProviderError(
-                f"Synthetic dataset directory not found: {dataset_dir}"
-            )
+            raise ProviderError(f"Synthetic dataset directory not found: {dataset_dir}")
 
         def _read(name: str) -> dict[str, Any]:
             with (dataset_dir / name).open() as fh:
@@ -114,13 +113,9 @@ class DemoDataset:
             bridges_doc = _read("bridges.json")
             mixers_doc = _read("mixers.json")
         except FileNotFoundError as exc:
-            raise ProviderError(
-                f"Missing synthetic dataset file: {exc.filename}"
-            ) from exc
+            raise ProviderError(f"Missing synthetic dataset file: {exc.filename}") from exc
         except json.JSONDecodeError as exc:
-            raise ProviderError(
-                f"Malformed JSON in synthetic dataset: {exc.msg}"
-            ) from exc
+            raise ProviderError(f"Malformed JSON in synthetic dataset: {exc.msg}") from exc
 
         # addresses
         addresses: dict[str, _DemoAddress] = {}
@@ -141,11 +136,7 @@ class DemoDataset:
         txs: list[CanonicalTransaction] = []
         for row in transactions_doc["transactions"]:
             ts_raw = row["block_timestamp"]
-            ts = (
-                datetime.fromisoformat(ts_raw.replace("Z", "+00:00"))
-                if ts_raw
-                else None
-            )
+            ts = datetime.fromisoformat(ts_raw.replace("Z", "+00:00")) if ts_raw else None
             txs.append(
                 CanonicalTransaction(
                     chain=row["chain"],
@@ -288,14 +279,16 @@ class DemoBlockchainProvider(BlockchainProvider):
             for tx in txs:
                 if tx.chain != self.chain_code:
                     continue
-                if start_time is not None and tx.block_timestamp and tx.block_timestamp < start_time:
+                if (
+                    start_time is not None
+                    and tx.block_timestamp
+                    and tx.block_timestamp < start_time
+                ):
                     continue
                 if end_time is not None and tx.block_timestamp and tx.block_timestamp > end_time:
                     continue
                 out.append(tx)
-        out.sort(
-            key=lambda t: t.block_timestamp or datetime.min.replace(tzinfo=UTC)
-        )
+        out.sort(key=lambda t: t.block_timestamp or datetime.min.replace(tzinfo=UTC))
         return out[:limit]
 
     async def stream_transactions(

@@ -12,6 +12,7 @@ target chain via the appropriate provider.
 The stage honours the Phase 14 hard rule on mixers: as soon as a mixer
 is hit the BFS stops expanding past it (see :func:`_is_mixer`).
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -59,9 +60,7 @@ async def run_discovery(
         outgoing = [t for t in txs if t.from_address == node.addr]
 
         if not outgoing and node.hops > 0:
-            candidates.append(
-                _candidate_for_dead_end(node, chain)
-            )
+            candidates.append(_candidate_for_dead_end(node, chain))
             continue
 
         for tx in outgoing:
@@ -117,9 +116,7 @@ async def run_discovery(
                 if follow is not None:
                     bridge_provider, bridge_chain = follow
                     downstream_txs = await bridge_provider.get_transactions(next_addr)
-                    downstream_outgoing = [
-                        t for t in downstream_txs if t.from_address == next_addr
-                    ]
+                    downstream_outgoing = [t for t in downstream_txs if t.from_address == next_addr]
                     for dtx in downstream_outgoing:
                         if dtx.to_address is None:
                             continue
@@ -172,10 +169,7 @@ async def run_discovery(
             # Intermediary / hub / dead_end.
             # Hub detection: if the address has very high degree and no
             # VASP tag, stop expanding (Stage C applies the formal filter).
-            if (
-                degree_lookup is not None
-                and degree_lookup.degree(next_addr) > HUB_DEGREE_THRESHOLD
-            ):
+            if degree_lookup is not None and degree_lookup.degree(next_addr) > HUB_DEGREE_THRESHOLD:
                 candidates.append(
                     _candidate_for_terminal(
                         new_node,
@@ -247,7 +241,9 @@ def _target_chain_for_bridge_tx(tx: CanonicalTransaction, current_chain: str) ->
 
 
 def _follow_bridge(
-    registry: ProviderRegistry, target_chain: str, _: str,
+    registry: ProviderRegistry,
+    target_chain: str,
+    _: str,
 ) -> tuple[Any, str] | None:
     try:
         return registry.get(target_chain), target_chain

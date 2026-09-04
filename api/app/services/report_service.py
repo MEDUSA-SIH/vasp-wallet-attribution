@@ -1,4 +1,5 @@
 """Report orchestration service (Phase 17)."""
+
 from __future__ import annotations
 
 

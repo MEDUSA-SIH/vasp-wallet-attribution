@@ -8,6 +8,7 @@ The method is the smoke endpoint backing ``POST /api/v1/attribution/run``.
 It delegates the heavy lifting to :class:`AttributionEngine` and then
 adapts the result into the wire-format :class:`AttributionRunResult`.
 """
+
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field

@@ -15,6 +15,7 @@ The response is the wire-format ``AttributionRunResult`` produced by
 (``low`` / ``medium`` / ``high``), plus an ``evidence_tier`` integer
 (Phase 5, 1..4) and a plain-language ``explanation`` (Phase 10 Stage H).
 """
+
 from __future__ import annotations
 
 from typing import Any

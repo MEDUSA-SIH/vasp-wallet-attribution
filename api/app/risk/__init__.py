@@ -6,6 +6,7 @@ This package groups:
 
 Both are scaffolded only – business logic arrives in a later stage.
 """
+
 from app.risk.alerts import evaluate_alerts
 from app.risk.typology import Typology, list_typologies
 
