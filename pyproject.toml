@@ -1,0 +1,33 @@
+[project]
+name = "sih26182-vasp-attribution"
+version = "0.1.0"
+description = "Smart India Hackathon 2026 – Problem SIH26182: VASP Wallet Attribution monorepo root."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Proprietary" }
+authors = [{ name = "MEDUSA Team" }]
+
+# This is a workspace-level pyproject that simply aggregates the sub-packages.
+# The actual FastAPI application lives in `api/pyproject.toml`.
+# Shared types live in `packages/common/pyproject.toml`.
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N", "ASYNC", "SIM"]
+ignore = ["E501", "F403", "F405", "E402", "B008"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = false
+ignore_missing_imports = true
+warn_unused_ignores = false
+exclude = ["build", "dist", ".venv", "venv", "alembic/versions"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q --strict-markers"
+testpaths = ["api/tests"]
+pythonpath = ["api", "packages/common/src"]

@@ -1,0 +1,10 @@
+# docker-compose.override.yml
+# Local-only overrides. Edit freely; this file is git-ignored for personal
+# variants. By default it just exposes extra ports and mounts for development.
+
+services:
+  api:
+    environment:
+        LOG_LEVEL: DEBUG
+        DB_ECHO: "true"
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

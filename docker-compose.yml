@@ -1,0 +1,85 @@
+# docker-compose.yml
+# Local development stack for SIH26182 VASP attribution.
+# Services: api (FastAPI), postgres, redis.
+
+name: sih26182
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sih26182-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-sih26182}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sih26182}
+      POSTGRES_DB: ${POSTGRES_DB:-sih26182}
+    volumes:
+        - sih26182_pgdata:/var/lib/postgresql/data
+    ports:
+        - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sih26182} -d ${POSTGRES_DB:-sih26182}"]
+        interval: 5s
+        timeout: 3s
+        retries: 10
+    networks:
+        - sih26182_net
+
+  redis:
+    image: redis:7-alpine
+    container_name: sih26182-redis
+    restart: unless-stopped
+    command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
+    volumes:
+        - sih26182_redisdata:/data
+    ports:
+        - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+        test: ["CMD", "redis-cli", "ping"]
+        interval: 5s
+        timeout: 3s
+        retries: 10
+    networks:
+        - sih26182_net
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: sih26182-api
+    restart: unless-stopped
+    depends_on:
+        postgres:
+            condition: service_healthy
+        redis:
+            condition: service_healthy
+    env_file:
+        - .env
+    environment:
+        # ensure api talks to compose-resolved hostnames
+        POSTGRES_HOST: postgres
+        REDIS_HOST: redis
+    ports:
+        - "${API_PORT:-8000}:8000"
+    volumes:
+        - ./api/app:/home/sih26182/app/app
+        - ./api/alembic:/home/sih26182/app/alembic
+        - ../data:/home/sih26182/data:ro
+    healthcheck:
+        test: ["CMD", "python", "-c", "import urllib.request, sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/api/v1/health', timeout=3).status == 200 else 1)"]
+        interval: 10s
+        timeout: 5s
+        retries: 10
+        start_period: 20s
+    networks:
+        - sih26182_net
+
+networks:
+  sih26182_net:
+    driver: bridge
+
+volumes:
+  sih26182_pgdata:
+    name: sih26182_pgdata
+  sih26182_redisdata:
+    name: sih26182_redisdata

@@ -1,3 +1,65 @@
-SIH26182_Technical_Specification.md
-node_modules
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+.Python
+build/
+dist/
+.eggs/
+*.manifest
+*.spec
+
+# Virtual environments
+.venv/
+venv/
+env/
+.envrc
+.python-version
+
+# uv / poetry
+.uv/
+uv.lock
+poetry.lock
+
+# pytest / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+.cache
+.mypy_cache/
+.ruff_cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Secrets & local env
 .env
+.env.local
+.env.*.local
+
+# Docker
+docker-compose.override.local.yml
+
+# Data (offline demo datasets)
+data/synthetic/*.csv
+data/synthetic/*.json
+data/synthetic/*.parquet
+
+# SDD workspaces
+.superpowers/
+
+# Alembic compiled cache
+api/alembic/versions/__pycache__/
