@@ -12,6 +12,7 @@ When ``DEMO_MODE`` is **off**, the per-chain stubs
 the responsibility of the matching work package (see
 ``docs/work-packages.md``).
 """
+
 from __future__ import annotations
 
 from app.config import Settings, get_settings

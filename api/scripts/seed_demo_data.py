@@ -21,6 +21,7 @@ The script:
 The script is idempotent — running it twice produces the same end
 state. It does not mutate the JSON fixtures on disk.
 """
+
 from __future__ import annotations
 
 import asyncio

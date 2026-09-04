@@ -1,4 +1,5 @@
 """Cross-cutting types used by both the API and other monorepo packages."""
+
 from __future__ import annotations
 
 from enum import StrEnum

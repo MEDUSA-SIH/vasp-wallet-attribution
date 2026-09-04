@@ -1,4 +1,5 @@
 """Investigation run record (Phase 8 + Phase 10)."""
+
 from __future__ import annotations
 
 from datetime import datetime

@@ -1,4 +1,5 @@
 """Provider abstraction unit tests (Phase 20)."""
+
 from __future__ import annotations
 
 import pytest

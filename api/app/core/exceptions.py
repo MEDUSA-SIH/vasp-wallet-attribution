@@ -1,4 +1,5 @@
 """Application-level exception types & FastAPI handlers (Phase 25)."""
+
 from __future__ import annotations
 
 from fastapi import FastAPI, Request

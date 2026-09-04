@@ -4,6 +4,7 @@ Creates the app, wires lifespan (DB + Redis), CORS, exception handlers and
 versioned routers. Currently exposes only the health router as a smoke
 test; domain routers will be mounted by later stages.
 """
+
 from __future__ import annotations
 
 from collections.abc import AsyncIterator

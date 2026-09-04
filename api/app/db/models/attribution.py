@@ -1,4 +1,5 @@
 """Attribution model (Phase 8 + Phase 10)."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING

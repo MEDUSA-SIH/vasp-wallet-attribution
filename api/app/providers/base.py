@@ -1,4 +1,5 @@
 """Provider abstraction (Phase 20)."""
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

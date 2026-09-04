@@ -1,6 +1,6 @@
 """Attribution router (Phase 10 + Phase 11).
 
-Exposes the minimal smoke path for WP-11:
+Smoke endpoint backed by :class:`AttributionService`:
 
     POST /api/v1/attribution/run
     {
@@ -9,9 +9,13 @@ Exposes the minimal smoke path for WP-11:
         "chain": "ethereum"
     }
 
-The handler delegates to :meth:`AttributionService.run_demo_attribution`
-which walks the demo graph and returns a structured candidate list.
+The response is the wire-format ``AttributionRunResult`` produced by
+:meth:`AttributionService.run_demo_attribution`. Each candidate carries
+``proximity_rank``, ``confidence_score`` (0..100) and ``confidence_band``
+(``low`` / ``medium`` / ``high``), plus an ``evidence_tier`` integer
+(Phase 5, 1..4) and a plain-language ``explanation`` (Phase 10 Stage H).
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -48,6 +52,7 @@ class AttributionRunResponse(BaseModel):
     hops_used: int
     insufficient_evidence: bool
     candidates: list[dict[str, Any]]
+    explanations: dict[str, str]
     started_at: str
     finished_at: str | None
     notes: list[str]
@@ -58,9 +63,8 @@ async def run_attribution_endpoint(
     payload: AttributionRunRequest,
     registry: ProviderRegistryDep,
 ) -> AttributionRunResponse:
-    """Smoke endpoint used by the offline demo path (WP-11)."""
+    """Smoke endpoint used by the offline demo path (WP-11 / WP-12-17)."""
     try:
-        # Validate the chain has a provider up front for a friendlier 400.
         registry.get(payload.chain)
     except KeyError as exc:
         raise HTTPException(
@@ -71,8 +75,8 @@ async def run_attribution_endpoint(
     result = await _service.run_demo_attribution(
         payload.suspect_address,
         chain=payload.chain,
-        case_id=payload.case_id,
         registry=registry,
+        case_id=payload.case_id,
         max_hops=payload.max_hops,
     )
     return AttributionRunResponse(**result.as_dict())

@@ -1,4 +1,5 @@
 """Health endpoint smoke test (Phase 25)."""
+
 from __future__ import annotations
 
 from fastapi.testclient import TestClient

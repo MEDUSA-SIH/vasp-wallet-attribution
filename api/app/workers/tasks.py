@@ -1,4 +1,5 @@
 """Background task placeholders (Phase 23)."""
+
 from __future__ import annotations
 
 import asyncio

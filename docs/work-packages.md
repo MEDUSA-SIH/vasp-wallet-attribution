@@ -33,14 +33,15 @@ list of touched files.
 | WP-07 | Solana provider (live API integration)                                                              |             | `feature/solana-provider-live`      | 20               | ⬜      |
 | WP-08 | Polygon provider (live API integration)                                                             |             | `feature/polygon-provider-live`     | 20               | ⬜      |
 | WP-09 | DemoBlockchainProvider — synthetic dataset loader (CSV → CanonicalTransaction)                     |             | `feature/demo-seed-loader`          | 21, 22           | ⬜      |
-| WP-10 | Attribution Stage A — discovery (seed resolution against DB)                                        |             | `feature/attr-stage-a`              | 10               | ⬜      |
-| WP-11 | Synthetic dataset + offline DemoBlockchainProvider + smoke path (this stage)                        | @tejas      | `feature/synthetic-demo-provider`   | 21, 22           | 🟡      |
-| WP-12 | Attribution Stage B — graph traversal (BFS + Dijkstra)                                              |             | `feature/attr-stage-b`              | 10               | ⬜      |
-| WP-13 | Attribution Stage C — filtering (VASP heuristics, dust, mixers)                                  |             | `feature/attr-stage-c`              | 10               | ⬜      |
-| WP-14 | Attribution Stage D — evidence collection                                                          |             | `feature/attr-stage-d`              | 10               | ⬜      |
-| WP-15 | Attribution Stage E + F — proximity + confidence scoring                                           |             | `feature/attr-stage-ef`             | 10               | ⬜      |
-| WP-16 | Attribution Stage G — ranking                                                                       |             | `feature/attr-stage-g`              | 10               | ⬜      |
-| WP-17 | Attribution Stage H — explainability                                                                 |             | `feature/attr-stage-h`              | 10               | ⬜      |
+| WP-10 | Attribution Stage A — discovery (seed resolution against DB)                                        |             | `feature/attr-stage-a`              | 10               | ✅ (folded into WP-35) |
+| WP-11 | Synthetic dataset + offline DemoBlockchainProvider + smoke path                                     | @tejas      | `feature/synthetic-demo-provider`   | 21, 22           | 🟡 (PR open) |
+| WP-12 | Attribution Stage B — graph traversal (BFS + Dijkstra)                                              |             | `feature/attr-stage-b`              | 10               | ✅ (folded into WP-35) |
+| WP-13 | Attribution Stage C — filtering (VASP heuristics, dust, mixers)                                  |             | `feature/attr-stage-c`              | 10               | ✅ (folded into WP-35) |
+| WP-14 | Attribution Stage D — evidence collection                                                          |             | `feature/attr-stage-d`              | 10               | ✅ (folded into WP-35) |
+| WP-15 | Attribution Stage E + F — proximity + confidence scoring                                           |             | `feature/attr-stage-ef`             | 10               | ✅ (folded into WP-35) |
+| WP-16 | Attribution Stage G — ranking                                                                       |             | `feature/attr-stage-g`              | 10               | ✅ (folded into WP-35) |
+| WP-17 | Attribution Stage H — explainability                                                                 |             | `feature/attr-stage-h`              | 10               | ✅ (folded into WP-35) |
+| WP-35 | Attribution engine core (Stages A–H end-to-end, MVP scoring) — **this stage**                       | @tejas      | `feature/attribution-engine-core`   | 10, 3.3          | 🟡 (PR open) |
 | WP-18 | Graph store — Neo4j backend (replace NetworkX)                                                     |             | `feature/graph-neo4j`               | 6, 11            | ⬜      |
 | WP-19 | Graph algorithms — community detection, page-rank, time-window traversal                           |             | `feature/graph-algos`               | 6, 11            | ⬜      |
 | WP-20 | Risk typologies — catalog expansion (mixer, peel-chain, nested VASP, bridge abuse)                 |             | `feature/risk-typologies`           | 14               | ⬜      |

@@ -1,4 +1,5 @@
 """Report model (Phase 8 + Phase 17)."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING

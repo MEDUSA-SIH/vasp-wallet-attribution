@@ -1,4 +1,5 @@
 """Bitcoin provider stub (Phase 20)."""
+
 from __future__ import annotations
 
 from collections.abc import AsyncIterator

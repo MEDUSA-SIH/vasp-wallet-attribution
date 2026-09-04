@@ -1,4 +1,5 @@
 """DemoBlockchainProvider unit tests (Phase 21 / 22)."""
+
 from __future__ import annotations
 
 import pytest

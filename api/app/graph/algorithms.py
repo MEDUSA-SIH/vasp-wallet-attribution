@@ -3,6 +3,7 @@
 Implementations are minimal placeholders; the contract (signatures,
 return types) is final so the engine can be wired without API churn.
 """
+
 from __future__ import annotations
 
 from collections.abc import Iterable
