@@ -1,4 +1,4 @@
-"""Risk analysis module (Phase 14 + REQ-020-023).
+"""Risk checks — typologies and alerts
 
 This package groups:
 - typology catalog (typology.py)

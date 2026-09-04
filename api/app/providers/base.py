@@ -1,4 +1,4 @@
-"""Provider abstraction (Phase 20)."""
+"""Provider abstraction."""
 
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ class TxQuery:
 
 
 class BlockchainProvider(ABC):
-    """Abstract base class for every chain-specific provider (Phase 20.3)."""
+    """Abstract base class for every chain-specific provider."""
 
     chain_code: str  # e.g. "bitcoin", "ethereum"
 
@@ -66,7 +66,7 @@ class BlockchainProvider(ABC):
 
 
 class ProviderRegistry:
-    """Holds active providers keyed by chain code (Phase 20)."""
+    """Holds active providers keyed by chain code."""
 
     def __init__(self) -> None:
         self._providers: dict[str, BlockchainProvider] = {}

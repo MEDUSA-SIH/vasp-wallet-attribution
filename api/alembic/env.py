@@ -1,5 +1,5 @@
 # api/alembic/env.py
-"""Alembic environment (Phase 8). Loads DATABASE_URL from app.config and uses
+"""Alembic setup — handles database migrations. Loads DATABASE_URL from app.config and uses
 SQLAlchemy's metadata for autogeneration.
 """
 

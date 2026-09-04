@@ -1,4 +1,4 @@
-"""Ethereum provider stub (Phase 20)."""
+"""Ethereum provider stub."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from app.providers.demo import raise_not_implemented
 
 
 class EthereumProvider(BlockchainProvider):
-    """Ethereum provider stub (Phase 20)."""
+    """Ethereum provider stub."""
 
     chain_code = "ethereum"
 

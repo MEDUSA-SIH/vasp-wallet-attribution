@@ -1,4 +1,4 @@
-"""Reports router (Phase 17)."""
+"""Reports API — generate investigation reports."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Case orchestration service (Phase 12).
+"""Case service — handles investigations and cases.
 
 Real CRUD operations will live here.  Stage 0 exposes only ``ping`` so other
 modules can import without breaking.

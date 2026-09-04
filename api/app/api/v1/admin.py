@@ -1,4 +1,4 @@
-"""Admin router – health, settings, audit (Phase 25)."""
+"""Admin endpoints — app settings and admin helpers."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Health router (Phase 25)."""
+"""Health endpoint — simple liveness check."""
 
 from __future__ import annotations
 

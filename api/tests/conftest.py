@@ -1,4 +1,4 @@
-"""Shared pytest fixtures (Phase 14)."""
+"""Shared pytest fixtures."""
 
 from __future__ import annotations
 

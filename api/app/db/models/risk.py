@@ -1,4 +1,4 @@
-"""Risk model (Phase 8 + Phase 14)."""
+"""Risk model."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 
 class Risk(BaseModel, UUIDPrimaryKeyMixin, TimestampMixin):
-    """A risk score for a wallet (Phase 14)."""
+    """A risk score for a wallet."""
 
     __tablename__ = "risks"
 

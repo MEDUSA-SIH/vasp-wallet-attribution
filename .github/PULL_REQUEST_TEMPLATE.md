@@ -2,10 +2,9 @@
 
 ## What does this PR do?
 
-<!-- One-paragraph summary. Reference the work package from docs/work-packages.md if applicable. -->
+<!-- One-paragraph summary in plain English. -->
 
 - Related issue: <!-- `Closes #123` or `Refs #123` -->
-- Work package: <!-- e.g. "WP-03 Bitcoin provider" -->
 
 ## Type of change
 

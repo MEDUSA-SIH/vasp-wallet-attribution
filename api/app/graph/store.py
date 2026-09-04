@@ -1,4 +1,4 @@
-"""In-process graph store backed by NetworkX (Phase 6 + Phase 11).
+"""In-memory graph store — holds wallets and transactions.
 
 The MVP relies on an in-process DiGraph. In later stages the same interface
 will be backed by Neo4j (see ``docs/phases-mapping.md``).
@@ -17,7 +17,7 @@ from app.graph.models import EdgeKind, GraphEdge, GraphNode, NodeKind
 class GraphStore:
     """Thin wrapper around a :class:`networkx.DiGraph`.
 
-    Methods intentionally mirror what the attribution engine needs (Phase 10).
+    Methods intentionally mirror what the attribution engine needs.
     """
 
     def __init__(self) -> None:
@@ -26,7 +26,7 @@ class GraphStore:
     # ------------------------------------------------------------------ helpers
     @property
     def raw(self) -> nx.DiGraph:
-        """Expose the underlying NetworkX graph (Phase 11)."""
+        """Expose the underlying NetworkX graph."""
         return self._graph
 
     def node_count(self) -> int:
@@ -90,7 +90,7 @@ _store_singleton: GraphStore | None = None
 
 
 def get_graph_store() -> GraphStore:
-    """Return the process-wide graph store singleton (Phase 11)."""
+    """Return the process-wide graph store singleton."""
     global _store_singleton
     if _store_singleton is None:
         _store_singleton = GraphStore()

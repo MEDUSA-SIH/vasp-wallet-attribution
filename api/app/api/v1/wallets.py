@@ -1,4 +1,4 @@
-"""Wallets router (Phase 11)."""
+"""Wallets API — list and fetch wallets."""
 
 from __future__ import annotations
 

@@ -10,7 +10,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class HealthResponse(BaseModel):
-    """Health endpoint payload (Phase 25)."""
+    """Health endpoint payload."""
 
     status: str = Field(default="ok", description="One of: ok, degraded, down")
     demo_mode: bool = Field(description="Whether the service is running offline demo mode")

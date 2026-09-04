@@ -1,4 +1,4 @@
-"""Seed the offline demo dataset (Phase 21 / Phase 22).
+"""Seed the offline demo dataset.
 
 Run with:
 

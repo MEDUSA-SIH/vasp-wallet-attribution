@@ -1,4 +1,4 @@
-"""SQLAlchemy declarative base (Phase 8)."""
+"""SQLAlchemy declarative base."""
 
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ NAMING_CONVENTION = {
 
 
 class BaseModel(DeclarativeBase):
-    """Project-wide declarative base (Phase 8)."""
+    """Project-wide declarative base."""
 
     metadata = MetaData(naming_convention=NAMING_CONVENTION)
 
@@ -32,7 +32,7 @@ def _utcnow() -> datetime:
 
 
 class UUIDPrimaryKeyMixin:
-    """Adds a server-default UUID primary key column (Phase 8)."""
+    """Adds a server-default UUID primary key column."""
 
     id: Mapped[UUID] = mapped_column(
         PgUUID(as_uuid=True),
@@ -42,7 +42,7 @@ class UUIDPrimaryKeyMixin:
 
 
 class TimestampMixin:
-    """Adds `created_at` and `updated_at` columns (Phase 8)."""
+    """Adds `created_at` and `updated_at` columns."""
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

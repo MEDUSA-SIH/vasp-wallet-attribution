@@ -1,4 +1,4 @@
-"""Report schemas (Phase 17)."""
+"""Report schemas."""
 
 from __future__ import annotations
 

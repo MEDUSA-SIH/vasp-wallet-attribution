@@ -1,4 +1,4 @@
-"""Wallet schemas (Phase 8 + Phase 11)."""
+"""Wallet schemas."""
 
 from __future__ import annotations
 

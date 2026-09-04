@@ -1,4 +1,4 @@
-"""Graph node/edge type definitions (Phase 6)."""
+"""Graph node/edge type definitions."""
 
 from __future__ import annotations
 

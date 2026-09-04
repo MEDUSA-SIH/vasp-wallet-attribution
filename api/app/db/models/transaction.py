@@ -1,4 +1,4 @@
-"""Transaction model (Phase 8)."""
+"""Transaction model."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 
 class Transaction(BaseModel, UUIDPrimaryKeyMixin):
-    """A single on-chain transaction (Phase 8)."""
+    """A single on-chain transaction."""
 
     __tablename__ = "transactions"
 

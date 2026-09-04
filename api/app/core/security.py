@@ -1,4 +1,4 @@
-"""Security primitives (Phase 25).
+"""Security helpers — passwords, tokens, and access checks.
 
 This module provides:
 - Password hashing helpers (passlib bcrypt).
@@ -72,7 +72,7 @@ def decode_access_token(token: str, *, settings: Settings | None = None) -> dict
 
 
 def require_role(role: str):
-    """Build a dependency that enforces the given role (Phase 25 RBAC)."""
+    """Build a dependency that enforces the given role."""
 
     async def _dep(investigator: AuthenticatedInvestigator) -> AuthenticatedInvestigator:
         if investigator.role != role and investigator.role != "admin":

@@ -1,4 +1,4 @@
-"""SAHYOG message models (Phase 7)."""
+"""SAHYOG message models."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from uuid import UUID, uuid4
 
 @dataclass(slots=True)
 class SahyogCase:
-    """A case ingested from SAHYOG (Phase 7)."""
+    """A case ingested from SAHYOG."""
 
     id: UUID
     case_number: str

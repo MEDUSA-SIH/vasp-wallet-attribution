@@ -1,4 +1,4 @@
-"""DemoBlockchainProvider unit tests (Phase 21 / 22)."""
+"""Demo provider tests — offline synthetic data."""
 
 from __future__ import annotations
 

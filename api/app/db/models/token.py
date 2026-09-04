@@ -1,4 +1,4 @@
-"""Token model (Phase 8)."""
+"""Token model."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class Token(BaseModel, UUIDPrimaryKeyMixin):
-    """A fungible token on a chain (Phase 8)."""
+    """A fungible token on a chain."""
 
     __tablename__ = "tokens"
 

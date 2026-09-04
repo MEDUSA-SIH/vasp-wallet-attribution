@@ -1,4 +1,4 @@
-"""Blockchain providers (Phase 20).
+"""Blockchain providers.
 
 Each provider implements the :class:`BlockchainProvider` protocol so the
 attribution engine and orchestrators can treat them uniformly.  For now

@@ -1,4 +1,4 @@
-"""Case schemas (Phase 8 + Phase 12)."""
+"""Case schemas."""
 
 from __future__ import annotations
 
@@ -21,7 +21,7 @@ class CaseBase(BaseModel):
 
 
 class CaseCreate(CaseBase):
-    """Create a new case (Phase 12)."""
+    """Create a new case."""
 
     created_by: UUID
     assigned_to: UUID | None = None

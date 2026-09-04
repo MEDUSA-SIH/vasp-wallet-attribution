@@ -1,4 +1,4 @@
-"""DB models unit tests (Phase 8).
+"""Database model tests.
 
 These tests do not require a real DB – they instantiate the SQLAlchemy
 models and verify metadata.

@@ -1,4 +1,4 @@
-"""FastAPI application entrypoint (Phase 25).
+"""FastAPI application — creates the app and wires dependencies.
 
 Creates the app, wires lifespan (DB + Redis), CORS, exception handlers and
 versioned routers. Currently exposes only the health router as a smoke
@@ -25,7 +25,7 @@ log = ""  # placeholder, real logger set in lifespan
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    """Initialise DB engine, session factory, Redis and provider registry (Phase 25)."""
+    """Initialise DB engine, session factory, Redis and provider registry."""
     settings = app.state.settings
 
     engine = create_async_engine(
@@ -46,9 +46,9 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         settings.redis_url, encoding="utf-8", decode_responses=True
     )
 
-    # Provider registry (Phase 20 + Phase 22). When DEMO_MODE is on, every
-    # supported chain returns a DemoBlockchainProvider backed by the
-    # synthetic dataset.
+    # Provider registry — picks the demo provider when DEMO_MODE is on,
+    # otherwise uses the live chain providers. The demo provider serves
+    # the local synthetic dataset so the app works without API keys.
     from app.providers.factory import build_default_provider_registry
 
     app.state.provider_registry = build_default_provider_registry(settings)
@@ -71,7 +71,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 
 def create_app() -> FastAPI:
-    """Application factory (Phase 25)."""
+    """Application factory."""
     configure_logging()
 
     from app.api.v1 import api_v1_router

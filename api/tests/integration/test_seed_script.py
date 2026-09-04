@@ -1,4 +1,4 @@
-"""Seed script integration smoke test (Phase 21)."""
+"""Seed script test."""
 
 from __future__ import annotations
 

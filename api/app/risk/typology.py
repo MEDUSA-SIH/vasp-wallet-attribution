@@ -1,4 +1,4 @@
-"""Risk typology catalog (Phase 14)."""
+"""Risk patterns catalog — known laundering and mixer patterns."""
 
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ _TYPOLOGIES: tuple[Typology, ...] = (
 
 
 def list_typologies() -> tuple[Typology, ...]:
-    """Return the static typology catalog (Phase 14)."""
+    """Return the static typology catalog."""
     return _TYPOLOGIES
 
 

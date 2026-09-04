@@ -1,4 +1,4 @@
-"""Solana provider stub (Phase 20)."""
+"""Solana provider stub."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from app.providers.demo import raise_not_implemented
 
 
 class SolanaProvider(BlockchainProvider):
-    """Solana provider stub (Phase 20)."""
+    """Solana provider stub."""
 
     chain_code = "solana"
 

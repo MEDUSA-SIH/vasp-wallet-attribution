@@ -1,4 +1,4 @@
-"""Chain model (Phase 8)."""
+"""Chain model."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from app.db.base import BaseModel, UUIDPrimaryKeyMixin
 
 
 class Chain(BaseModel, UUIDPrimaryKeyMixin):
-    """A supported blockchain (Phase 8)."""
+    """A supported blockchain."""
 
     __tablename__ = "chains"
 

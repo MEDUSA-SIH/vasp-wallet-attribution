@@ -1,27 +1,17 @@
-"""Stages E and F — Proximity rank and confidence score (Phase 10 / Phase 3.3).
+"""Steps E and F — Score how close and how confident each candidate is.
 
-Two independent numbers:
+Two separate numbers:
 
-- ``proximity_rank`` (Stage E): weighted-graph distance from suspect to
-  terminal. Lower = closer. Components:
-    - base hop cost (1.0 per hop)
-    - mixing penalty (per mixer / bridge hop)
-    - time-decay penalty (for stale activity)
-    - fan-out penalty (suspect fans to many terminals)
-- ``confidence_score`` (Stage F): 0..100. Components are weighted
-  equally (1/6 each — MVP per the prompt):
-    - evidence_tier_score
-    - label_source_agreement
-    - address_reuse_signal
-    - cluster_consistency
-    - path_integrity
-    - evidence_freshness
+- ``proximity_rank`` (Step E): how far the candidate is from the suspect.
+  Lower means closer. Based on hops + extra penalties for mixers, bridges,
+  and old activity.
+- ``confidence_score`` (Step F): 0–100, how much we trust the match.
+  Six simple signals are averaged equally:
+    evidence tier, label agreement, address reuse, cluster consistency,
+    path integrity, and freshness.
 
-The function returns the two numbers **independently**. Stage G ranks
-candidates by ``proximity_rank`` only; the score is shown alongside.
-
-Both implementations are deliberately simple and explainable. No
-ML, no opaque weights.
+The two numbers are kept separate — we sort by proximity and show
+confidence alongside. No machine learning, just clear rules.
 """
 
 from __future__ import annotations
@@ -30,7 +20,7 @@ from datetime import UTC, datetime
 
 from app.attribution.types import EvidenceItem, EvidenceTier, ScoredCandidate
 
-# ----- Proximity rank (Stage E) ---------------------------------------------
+# ----- Proximity rank (Step E) — how close is the candidate? -------------
 
 
 def compute_proximity(scored: list[ScoredCandidate]) -> list[ScoredCandidate]:
@@ -68,7 +58,7 @@ def _proximity_components(cand) -> dict[str, float]:
     return components
 
 
-# ----- Confidence score (Stage F) -------------------------------------------
+# ----- Confidence score (Step F) — how trustworthy is the match? ---------
 
 
 CONFIDENCE_WEIGHTS: dict[str, float] = {
@@ -88,8 +78,8 @@ def compute_confidence(scored: list[ScoredCandidate]) -> list[ScoredCandidate]:
         tier = _evidence_tier(cand, s)
         s.evidence_tier = tier
 
-        # Phase 14 hard rule: mixer hits get a 0 confidence score — there
-        # is no trustworthy downstream attribution past a mixer.
+        # Mixer rule: if funds went through a mixer, confidence is 0.
+        # We cannot reliably trace past a mixer.
         if cand.hits_mixer:
             s.confidence_score = 0.0
             s.confidence_band = "low"
@@ -97,7 +87,7 @@ def compute_confidence(scored: list[ScoredCandidate]) -> list[ScoredCandidate]:
                 EvidenceItem(
                     code="mixer_stop",
                     weight=0.0,
-                    detail="Mixer hard-stop: confidence set to 0 (Phase 14).",
+                    detail="Mixer stop: confidence set to 0.",
                 )
             ]
             continue
@@ -197,7 +187,7 @@ def _evidence_items(components: dict[str, float], cand) -> list[EvidenceItem]:
             EvidenceItem(
                 code="mixer_stop",
                 weight=0.0,
-                detail="Funds passed through a known mixer; attribution stops here (Phase 14).",
+                detail="Funds passed through a known mixer; attribution stops here.",
             )
         )
     if cand.crosses_bridge:
@@ -205,7 +195,7 @@ def _evidence_items(components: dict[str, float], cand) -> list[EvidenceItem]:
             EvidenceItem(
                 code="bridge_hop",
                 weight=-0.1,
-                detail=f"Cross-chain bridge hop (id={cand.bridge_id}); confidence degraded per Phase 14.",
+                detail=f"Cross-chain bridge hop (id={cand.bridge_id}); confidence reduced due to chain hop.",
             )
         )
     if cand.hops == len(cand.edges) and cand.edges:

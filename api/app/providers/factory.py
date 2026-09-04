@@ -1,16 +1,11 @@
-"""Provider factory (Phase 20 / Phase 21 / Phase 22).
+"""Provider factory — builds the chain provider registry.
 
-When ``DEMO_MODE`` is enabled the :func:`build_default_provider_registry`
-function returns a :class:`app.providers.base.ProviderRegistry` populated
-with one :class:`app.providers.demo.DemoBlockchainProvider` per supported
-chain. This is the single source of truth that the rest of the app uses
-to pick a provider at runtime.
+When ``DEMO_MODE`` is on, this creates a registry with a demo provider
+for every supported chain (uses the local synthetic dataset, no API keys).
+When ``DEMO_MODE`` is off, it registers placeholder providers that raise
+an error until real chain integrations are added.
 
-When ``DEMO_MODE`` is **off**, the per-chain stubs
-(``BitcoinProvider``, ``EthereumProvider``, …) are registered. They raise
-``ProviderError`` on every method – a real provider implementation is
-the responsibility of the matching work package (see
-``docs/work-packages.md``).
+This is the single place the app uses to pick a provider at runtime.
 """
 
 from __future__ import annotations

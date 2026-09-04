@@ -1,17 +1,13 @@
-"""Stage B — Path reconstruction (Phase 10 / Phase 22).
+"""Step B — Rebuild the full path.
 
-Discovery already materialises the full path of addresses and edges on
-every :class:`Candidate`. Stage B's job is to enrich each candidate
-with:
+The search step already collects the path for each candidate. This step
+wraps it in a scored container and adds helpers:
 
-- ``hop_sequence`` — the ordered list of ``(chain, address)`` pairs
-  traversed from suspect to terminal.
-- ``key_tx_hashes`` — the chain-specific tx hashes that constitute
-  the candidate's evidence trail (used in reports downstream).
-- ``path_integrity`` — a 0..1 boolean signal (1.0 = every hop has a
-  real CanonicalTransaction backing it, 0.0 = nothing).
+- ``hop_sequence`` — ordered list of addresses from suspect to terminal
+- ``key_tx_hashes`` — transaction hashes that support the path
+- ``path_integrity`` — 1 if every hop has a real transaction, else 0
 
-Stage B is a pure transformation; it does not consult providers.
+This is a simple data transformation — it does not call any external service.
 """
 
 from __future__ import annotations

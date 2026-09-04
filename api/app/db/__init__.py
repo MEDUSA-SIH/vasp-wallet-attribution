@@ -1,4 +1,4 @@
-"""Database package (Phase 8)."""
+"""Database package — models and session helpers."""
 
 from app.db.base import BaseModel
 from app.db.session import get_session_factory, healthcheck

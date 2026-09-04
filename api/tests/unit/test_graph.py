@@ -1,4 +1,4 @@
-"""Graph store unit tests (Phase 11)."""
+"""Graph store tests."""
 
 from __future__ import annotations
 

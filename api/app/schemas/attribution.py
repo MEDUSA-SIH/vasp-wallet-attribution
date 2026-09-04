@@ -1,4 +1,4 @@
-"""Attribution schemas (Phase 10)."""
+"""Attribution schemas."""
 
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ class AttributionRead(AttributionBase, IdMixin, TimestampMixin):
 
 
 class AttributionRankingEntry(BaseModel):
-    """One entry in a ranking result (Phase 10 Stage G)."""
+    """One entry in a ranking result."""
 
     wallet_id: UUID
     address: str | None = None
@@ -49,7 +49,7 @@ class AttributionRankingEntry(BaseModel):
 
 
 class AttributionRankingResponse(BaseModel):
-    """Response for /attribution/rank (Phase 10 Stage G)."""
+    """Response for /attribution/rank."""
 
     case_id: UUID
     entries: list[AttributionRankingEntry]

@@ -1,11 +1,9 @@
-"""Stage C — Candidate filtering (Phase 10 / Phase 14).
+"""Step C — Filter out noise.
 
-Apply hard rules that drop candidates before scoring:
+Apply simple rules to drop weak candidates before scoring:
 
-1. **Mixer hard stop (Phase 14)** — anything beyond a mixer is never
-   attributed. We don't drop the mixer itself (it is useful evidence),
-   but we **demote** it so it can't be ranked against real VASP
-   candidates.
+1. **Mixer stop** — we never attribute past a mixer. The mixer itself
+   is kept as evidence but is not ranked as a real exchange candidate.
 2. **Dust filter** — a hop under ``MIN_HOP_AMOUNT`` (configurable) is
    treated as noise.
 3. **Non-VASP terminal** — candidates that resolve to a non-VASP,

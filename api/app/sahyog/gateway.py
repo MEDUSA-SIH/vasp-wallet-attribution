@@ -1,4 +1,4 @@
-"""SAHYOG gateway abstraction (Phase 7)."""
+"""SAHYOG gateway — talks to the inter-agency portal."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from app.sahyog.models import SahyogCase, SahyogMessage, SahyogReceipt
 
 
 class SahyogGateway(ABC):
-    """Outbound gateway to the SAHYOG inter-agency network (Phase 7)."""
+    """Outbound gateway to the SAHYOG inter-agency network."""
 
     @abstractmethod
     async def fetch_case(self, external_id: str) -> SahyogCase:
@@ -22,7 +22,7 @@ class SahyogGateway(ABC):
 
 
 class StubSahyogGateway(SahyogGateway):
-    """Stub gateway that records calls in a list (Phase 7)."""
+    """Stub gateway that records calls in a list."""
 
     def __init__(self) -> None:
         self.sent: list[SahyogMessage] = []

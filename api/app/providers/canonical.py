@@ -1,4 +1,4 @@
-"""Canonical transaction schema (Phase 9).
+"""Canonical transaction schema.
 
 All providers normalise their chain-specific transaction shape into the
 :class:`CanonicalTransaction` before downstream code touches it.
@@ -14,7 +14,7 @@ from typing import Any
 
 @dataclass(slots=True, frozen=True)
 class CanonicalTransaction:
-    """A chain-agnostic transaction record (Phase 9)."""
+    """A chain-agnostic transaction record."""
 
     chain: str
     tx_hash: str

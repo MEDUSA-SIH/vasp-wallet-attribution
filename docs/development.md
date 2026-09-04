@@ -32,7 +32,7 @@ container.
 | Seed demo data                | `make seed-demo`                           |
 | Tear down stack               | `make down`                                |
 
-## Offline demo path (WP-11 / Phase 21/22)
+## Offline demo path
 
 The whole attribution pipeline can be exercised offline, without any
 live blockchain API keys. The `DEMO_MODE=true` flag (default) swaps in a
@@ -112,7 +112,7 @@ Expected response (truncated):
       "confidence_score": 0.0,
       "confidence_band": "low",
       "evidence_tier": 99,
-      "explanation": "Funds reached a known mixer (mixer_demo_a); attribution stops here per Phase 14 hard rule. …"
+      "explanation": "Funds reached a known mixer (mixer_demo_a); attribution stops here — funds through a mixer cannot be reliably traced. …"
     }
   ]
 }
@@ -134,13 +134,12 @@ Expected response (truncated):
 The integration test `api/tests/integration/test_attribution_smoke.py`
 exercises all 8 cases end-to-end via `TestClient`.
 
-## Scoring design (WP-35 / Phase 10 + Phase 3.3)
+## Scoring design
 
-The engine exposes two **independent** numbers per candidate — the
-invariant from Phase 3.3. They are never blended into a single ranking
-score.
+The engine exposes two **independent** numbers per candidate — they are
+never blended into a single ranking score.
 
-### `proximity_rank` (Stage E) — lower is closer
+### `proximity_rank` — lower is closer
 
 A weighted-graph distance from suspect to terminal. Components:
 
@@ -150,11 +149,11 @@ A weighted-graph distance from suspect to terminal. Components:
 | `mixing_penalty`       | 2.0            | path crosses a labelled mixer             |
 | `bridge_penalty`       | 1.0            | path crosses a bridge contract            |
 | `time_decay_penalty`   | 0–2.0          | last_seen_at older than 90 days           |
-| `fan_out_penalty`      | 0–2.0          | reserved (WP-35 reserves the hook)       |
+| `fan_out_penalty`      | 0–2.0          | reserved for future use                  |
 
 The sum is the rank. Stage G sorts ascending.
 
-### `confidence_score` (Stage F) — 0..100
+### `confidence_score` — 0..100
 
 Equal-weight (1/6) combination of:
 
@@ -173,14 +172,14 @@ The sum × 100 is the score. Bands:
 | medium  | 40–69    |
 | low     | < 40     |
 
-### Mixer hard stop (Phase 14)
+### Mixer handling
 
 Any candidate that hits a labelled mixer gets
 `confidence_score = 0.0` and `confidence_band = "low"` regardless of the
 component weights. Mixer hits do NOT contribute to ranking — they
 exist as evidence only.
 
-### Evidence tiers (Phase 5)
+### Evidence tiers
 
 | Tier | Label                                | When                                |
 |------|--------------------------------------|-------------------------------------|
