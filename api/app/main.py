@@ -24,7 +24,7 @@ log = ""  # placeholder, real logger set in lifespan
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    """Initialise DB engine, session factory and Redis (Phase 25)."""
+    """Initialise DB engine, session factory, Redis and provider registry (Phase 25)."""
     settings = app.state.settings
 
     engine = create_async_engine(
@@ -45,12 +45,20 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         settings.redis_url, encoding="utf-8", decode_responses=True
     )
 
+    # Provider registry (Phase 20 + Phase 22). When DEMO_MODE is on, every
+    # supported chain returns a DemoBlockchainProvider backed by the
+    # synthetic dataset.
+    from app.providers.factory import build_default_provider_registry
+
+    app.state.provider_registry = build_default_provider_registry(settings)
+
     structlog = get_logger("api.lifespan")
     structlog.info(
         "application.startup",
         version=__version__,
         demo_mode=settings.demo_mode,
         env=settings.app_env,
+        chains=app.state.provider_registry.available(),
     )
 
     try:
@@ -72,7 +80,7 @@ def create_app() -> FastAPI:
         version=__version__,
         description=(
             "Backend API for the SIH26182 VASP Wallet Attribution system. "
-            "Stage 0 scaffold – business logic pending."
+            "Stage 1 – synthetic dataset + offline DemoBlockchainProvider."
         ),
         lifespan=lifespan,
     )

@@ -267,8 +267,27 @@ class DemoBlockchainProvider(BlockchainProvider):
         limit: int = 100,
     ) -> list[CanonicalTransaction]:
         out: list[CanonicalTransaction] = []
-        for chain in self._chains_for_address(address):
-            for tx in self._dataset.tx_by_address.get((address, chain), []):
+        # The provider is chain-scoped. Look up the address only on the
+        # bound chain so cross-chain entries (e.g. bridges) are queried
+        # on the right provider instance.
+        for tx in self._dataset.tx_by_address.get((address, self.chain_code), []):
+            if tx.chain != self.chain_code:
+                continue
+            if start_time is not None and tx.block_timestamp and tx.block_timestamp < start_time:
+                continue
+            if end_time is not None and tx.block_timestamp and tx.block_timestamp > end_time:
+                continue
+            out.append(tx)
+        # Also pick up any tx where the address appears on a *different*
+        # chain — necessary for bridge addresses that exist on multiple
+        # chains. We only return txs whose chain matches ours so the
+        # provider's chain scope is preserved.
+        for (addr, chain), txs in self._dataset.tx_by_address.items():
+            if addr != address or chain == self.chain_code:
+                continue
+            for tx in txs:
+                if tx.chain != self.chain_code:
+                    continue
                 if start_time is not None and tx.block_timestamp and tx.block_timestamp < start_time:
                     continue
                 if end_time is not None and tx.block_timestamp and tx.block_timestamp > end_time:
@@ -342,12 +361,29 @@ class DemoBlockchainProvider(BlockchainProvider):
 
     # -- helpers ---------------------------------------------------------------
     def _chains_for_address(self, address: str) -> set[str]:
+        """Chains where ``address`` has any tx involvement.
+
+        A provider instance is bound to a single ``chain_code`` via the
+        constructor. The lookup favours ``self.chain_code`` so the
+        provider acts as a chain-scoped view over the dataset, but we
+        also include other chains the address appears on so cross-chain
+        bridges (where one address has roles on two chains) are still
+        discoverable. Callers must filter the returned txs by
+        ``tx.chain``.
+        """
+        chains: set[str] = set()
         ad = self._dataset.addresses.get(address)
         if ad:
-            return {ad.chain}
+            chains.add(ad.chain)
         # Address may appear in transactions on chains not present in
         # addresses.json – infer from the tx index.
-        return {chain for (addr, chain), _ in self._dataset.tx_by_address.items() if addr == address}
+        for (addr, chain), _ in self._dataset.tx_by_address.items():
+            if addr == address:
+                chains.add(chain)
+        # Always include the provider's bound chain even if the address
+        # isn't indexed there yet (defensive).
+        chains.add(self.chain_code)
+        return chains
 
 
 _SHARED_DATASET: DemoDataset | None = None

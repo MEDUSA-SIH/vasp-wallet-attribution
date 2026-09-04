@@ -73,6 +73,7 @@ ignore = [
 "tests/*" = ["PLR2004", "F401"]
 "app/main.py" = ["PLC0415"]
 "app/providers/demo.py" = ["PLR0912"]
+"app/services/attribution_service.py" = ["PLR0915"]
 
 [tool.mypy]
 python_version = "3.12"
