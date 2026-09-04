@@ -65,12 +65,14 @@ ignore = [
     "PLR1714",
     "PLW0127",
     "PLW0603",
+    "PLR0912", # too many branches (data loader is necessarily branchy)
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "app/alembic/env.py" = ["E402"]
 "tests/*" = ["PLR2004", "F401"]
 "app/main.py" = ["PLC0415"]
+"app/providers/demo.py" = ["PLR0912"]
 
 [tool.mypy]
 python_version = "3.12"
