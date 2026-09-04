@@ -80,11 +80,13 @@ Expected response (truncated):
   "insufficient_evidence": false,
   "candidates": [
     {
-      "hops": 1,
-      "endpoint_role": "vasp",
-      "vasp_id": "vasp_alpha",
-      "confidence": 0.5,
-      "evidence_tier": "tier_2_demo_vasp"
+      "candidate": {"terminal_role": "vasp", "vasp_id": "vasp_alpha", "hops": 1},
+      "proximity_rank": 3.0,
+      "confidence_score": 77.5,
+      "confidence_band": "high",
+      "evidence_tier": 1,
+      "evidence_tier_label": "Tier 1 — Direct VASP deposit label",
+      "explanation": "Terminal wallet is tagged as a deposit of 'vasp_alpha' (VASP Alpha deposit). …"
     }
   ]
 }
@@ -106,9 +108,11 @@ Expected response (truncated):
   "insufficient_evidence": true,
   "candidates": [
     {
-      "endpoint_role": "mixer",
-      "mixer_id": "mixer_demo_a",
-      "evidence_tier": "tier_1_mixer_stop"
+      "candidate": {"terminal_role": "mixer", "mixer_id": "mixer_demo_a"},
+      "confidence_score": 0.0,
+      "confidence_band": "low",
+      "evidence_tier": 99,
+      "explanation": "Funds reached a known mixer (mixer_demo_a); attribution stops here per Phase 14 hard rule. …"
     }
   ]
 }
@@ -116,19 +120,84 @@ Expected response (truncated):
 
 ### All 8 synthetic cases at a glance
 
-| Case | Pattern                         | Expected outcome                |
-|------|---------------------------------|----------------------------------|
-| 1    | Direct VASP deposit             | `single_candidate`              |
-| 2    | One intermediary                | `single_candidate`              |
-| 3    | Multiple intermediaries         | `single_candidate`              |
-| 4    | Multiple candidate VASPs        | `ranked_multi_candidate`        |
-| 5    | Mixer                           | `insufficient_evidence`         |
-| 6    | Bridge (cross-chain)            | `single_candidate`              |
-| 7    | False candidate (high-degree)   | `false_candidate_filtered`      |
-| 8    | Ambiguous / insufficient        | `insufficient_evidence`         |
+| Case | Pattern                         | Outcome                       | Tier | Confidence (band) |
+|------|---------------------------------|-------------------------------|------|--------------------|
+| 1    | Direct VASP deposit             | `single_candidate`            | 1    | ~78 (high)         |
+| 2    | One intermediary                | `single_candidate`            | 2    | ~78 (high)         |
+| 3    | Multiple intermediaries         | `single_candidate`            | 3    | ~82 (high)         |
+| 4    | Multiple candidate VASPs        | `ranked_multi_candidate`      | 2    | ~78 (high)         |
+| 5    | Mixer                           | `insufficient_evidence`       | 99   | 0.0 (low)          |
+| 6    | Bridge (cross-chain)            | `single_candidate`            | 3    | ~74 (high)         |
+| 7    | False candidate (high-degree)   | `false_candidate_filtered`    | 4    | ~49 (medium)       |
+| 8    | Ambiguous / insufficient        | `insufficient_evidence`       | 4    | ~33 (low)          |
 
 The integration test `api/tests/integration/test_attribution_smoke.py`
 exercises all 8 cases end-to-end via `TestClient`.
+
+## Scoring design (WP-35 / Phase 10 + Phase 3.3)
+
+The engine exposes two **independent** numbers per candidate — the
+invariant from Phase 3.3. They are never blended into a single ranking
+score.
+
+### `proximity_rank` (Stage E) — lower is closer
+
+A weighted-graph distance from suspect to terminal. Components:
+
+| Component              | Default weight | When it triggers                          |
+|------------------------|---------------:|-------------------------------------------|
+| `base_hop_cost`        | 1.0 per hop    | always                                    |
+| `mixing_penalty`       | 2.0            | path crosses a labelled mixer             |
+| `bridge_penalty`       | 1.0            | path crosses a bridge contract            |
+| `time_decay_penalty`   | 0–2.0          | last_seen_at older than 90 days           |
+| `fan_out_penalty`      | 0–2.0          | reserved (WP-35 reserves the hook)       |
+
+The sum is the rank. Stage G sorts ascending.
+
+### `confidence_score` (Stage F) — 0..100
+
+Equal-weight (1/6) combination of:
+
+- `evidence_tier_score`       — Tier 1 → 1.0, Tier 2 → 0.8, Tier 3 → 0.55, Tier 4 → 0.3, none → 0
+- `label_source_agreement`    — 1.0 if the dataset tags the terminal with a label
+- `address_reuse_signal`      — `min(1.0, hops / 4)`
+- `cluster_consistency`       — 1.0 for VASP-tagged terminal with no mixer hit
+- `path_integrity`            — 1.0 if every hop is backed by a CanonicalTransaction
+- `evidence_freshness`        — 1.0 fresh, 0.7 (<1 year), 0.4 (>1 year), 0.5 unknown
+
+The sum × 100 is the score. Bands:
+
+| Band    | Range    |
+|---------|----------|
+| high    | ≥ 70     |
+| medium  | 40–69    |
+| low     | < 40     |
+
+### Mixer hard stop (Phase 14)
+
+Any candidate that hits a labelled mixer gets
+`confidence_score = 0.0` and `confidence_band = "low"` regardless of the
+component weights. Mixer hits do NOT contribute to ranking — they
+exist as evidence only.
+
+### Evidence tiers (Phase 5)
+
+| Tier | Label                                | When                                |
+|------|--------------------------------------|-------------------------------------|
+| 1    | Direct VASP deposit label            | VASP-tagged terminal, 1-hop, no bridge |
+| 2    | Tagged hot-wallet cluster            | VASP-tagged terminal, ≤2 hops, no bridge |
+| 3    | Behavioral / consolidation only      | VASP-tagged terminal that crosses a bridge |
+| 4    | Heuristic / topological only         | non-VASP terminal (hub / dead end) |
+| 99   | Insufficient evidence                | mixer stop or empty trail          |
+
+### Outcome classifier
+
+| Outcome                     | When                                      |
+|-----------------------------|-------------------------------------------|
+| `single_candidate`          | exactly one VASP candidate               |
+| `ranked_multi_candidate`    | multiple VASP candidates                 |
+| `false_candidate_filtered`  | only hubs (no mixer, no VASP)             |
+| `insufficient_evidence`     | mixer hit, dead-end only, or empty        |
 
 ## Local development without Docker
 

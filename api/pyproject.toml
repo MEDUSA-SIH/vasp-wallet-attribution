@@ -74,6 +74,7 @@ ignore = [
 "app/main.py" = ["PLC0415"]
 "app/providers/demo.py" = ["PLR0912"]
 "app/services/attribution_service.py" = ["PLR0915"]
+"app/attribution/discovery.py" = ["PLR0915", "SIM102"]
 
 [tool.mypy]
 python_version = "3.12"
