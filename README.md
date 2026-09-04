@@ -13,14 +13,23 @@ BNB, SOL, MATIC), builds a multi-chain transaction graph, runs an
 attribution engine, and produces structured evidence packages that can be
 routed through the **SAHYOG** inter-agency gateway.
 
-> **Stage 0.5 status – Scaffold + team-collaboration base merged on `develop`**
+> **Stage 1 status – Synthetic dataset + offline DemoBlockchainProvider merged on `develop`**
 >
 > The repository layout, interfaces, configuration, Docker Compose stack
-> and Alembic migrations are in place, plus the team-collaboration base:
-> CI, pre-commit, contracts doc, work-package matrix, CODEOWNERS, issue
-> & PR templates. Business logic is scaffolded but not yet implemented.
-> See `docs/phases-mapping.md` to map folders to the SIH26182 phases
-> and `docs/work-packages.md` to claim a slice of the work.
+> and Alembic migrations are in place, plus the team-collaboration base
+> (CI, pre-commit, contracts doc, work-package matrix, CODEOWNERS) and
+> the offline attribution path:
+>
+> - `data/synthetic/` – 8 synthetic test cases (Phase 22 patterns).
+> - `app/providers/demo.py` – `DemoBlockchainProvider` serves them.
+> - `app/providers/factory.py` – DEMO_MODE-aware provider registry.
+> - `app/services/attribution_service.py` + `POST /api/v1/attribution/run`
+>   – the smoke endpoint that walks the demo graph end-to-end.
+> - `make seed-demo` – idempotent seed script.
+>
+> See `docs/phases-mapping.md` to map folders to the SIH26182 phases,
+> `docs/work-packages.md` to claim a slice of the work, and
+> `docs/development.md` for the offline-demo walk-through.
 
 ## Repository layout
 
@@ -80,7 +89,29 @@ make branch NAME=btc-provider-live   # creates feature/btc-provider-live
 make check                          # runs ruff + import smoke + yaml sanity
 make test                           # runs pytest
 make migrate                        # applies Alembic migrations
+make seed-demo                      # loads data/synthetic/ into the demo provider
 ```
+
+## Offline demo (Phase 21 / 22)
+
+Once the stack is up (with `DEMO_MODE=true`, the default), the synthetic
+dataset is queryable through the same `BlockchainProvider` interface as
+real chains:
+
+```bash
+# Case 1 — direct VASP deposit
+curl -X POST http://localhost:8000/api/v1/attribution/run \
+  -H 'content-type: application/json' \
+  -d '{"suspect_address":"0xDEMO_case1_suspect_001","chain":"ethereum"}'
+
+# Case 5 — mixer → insufficient_evidence
+curl -X POST http://localhost:8000/api/v1/attribution/run \
+  -H 'content-type: application/json' \
+  -d '{"suspect_address":"0xDEMO_case5_suspect_001","chain":"ethereum"}'
+```
+
+All 8 cases (see `docs/development.md`) resolve to their documented
+outcome without any live API keys.
 
 ## Useful Make targets
 
