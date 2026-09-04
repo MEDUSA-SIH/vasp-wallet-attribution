@@ -418,3 +418,5 @@ Proprietary — Smart India Hackathon 2026 submission. All rights reserved. No l
 
 Problem statement and sponsorship: **Ministry of Home Affairs, I4C, CIS Division** via SIH 2026. Built by the **MEDUSA** team. Off-chain intelligence patterns and VASP/Tier definitions are informed by public FATF/PMLA guidance and commercial blockchain-intelligence research, adapted into an explainable MVP for LEA use.
 
+
+<!-- valid merge demo: docs touch to verify required checks -->
