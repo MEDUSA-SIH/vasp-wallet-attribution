@@ -1,4 +1,5 @@
 """Health router (Phase 25)."""
+
 from __future__ import annotations
 
 from fastapi import APIRouter, Request

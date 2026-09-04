@@ -1,4 +1,5 @@
 """Bridge detection (Phase 13)."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -14,9 +15,17 @@ class BridgeDetector:
 
 
 _KNOWN_BRIDGES: tuple[BridgeDetector, ...] = (
-    BridgeDetector("wormhole", ("solana", "ethereum", "bnb", "polygon"), ("solana", "ethereum", "bnb", "polygon")),
+    BridgeDetector(
+        "wormhole",
+        ("solana", "ethereum", "bnb", "polygon"),
+        ("solana", "ethereum", "bnb", "polygon"),
+    ),
     BridgeDetector("axelar", ("ethereum", "polygon", "bnb"), ("ethereum", "polygon", "bnb")),
-    BridgeDetector("layerzero", ("ethereum", "bnb", "polygon", "solana"), ("ethereum", "bnb", "polygon", "solana")),
+    BridgeDetector(
+        "layerzero",
+        ("ethereum", "bnb", "polygon", "solana"),
+        ("ethereum", "bnb", "polygon", "solana"),
+    ),
 )
 
 

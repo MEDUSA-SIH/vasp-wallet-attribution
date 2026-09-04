@@ -1,4 +1,5 @@
 """Case model (Phase 8)."""
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -24,7 +25,9 @@ class Case(BaseModel, UUIDPrimaryKeyMixin):
     title: Mapped[str] = mapped_column(String(length=255), nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[str] = mapped_column(String(length=32), nullable=False, server_default="open")
-    priority: Mapped[str] = mapped_column(String(length=16), nullable=False, server_default="medium")
+    priority: Mapped[str] = mapped_column(
+        String(length=16), nullable=False, server_default="medium"
+    )
     created_by: Mapped[UUID] = mapped_column(
         PgUUID(as_uuid=True), ForeignKey("investigators.id"), nullable=False
     )

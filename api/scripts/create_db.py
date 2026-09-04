@@ -3,6 +3,7 @@
 Used by integration tests / first-run bootstrapping. Production deploys
 will rely on the orchestrated Postgres container instead.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -26,9 +27,7 @@ async def _ensure_database() -> None:
         database="postgres",
     )
     try:
-        exists = await conn.fetchval(
-            "SELECT 1 FROM pg_database WHERE datname = $1", s.postgres_db
-        )
+        exists = await conn.fetchval("SELECT 1 FROM pg_database WHERE datname = $1", s.postgres_db)
         if not exists:
             # Database names can't be parameters; rely on settings injection.
             await conn.execute(f'CREATE DATABASE "{s.postgres_db}"')

@@ -1,4 +1,5 @@
 """Block model (Phase 8)."""
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -28,9 +29,7 @@ class Block(BaseModel, UUIDPrimaryKeyMixin):
     timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     tx_count: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
 
-    __table_args__ = (
-        UniqueConstraint("chain_id", "height", name="uq_blocks_chain_height"),
-    )
+    __table_args__ = (UniqueConstraint("chain_id", "height", name="uq_blocks_chain_height"),)
 
 
 __all__ = ["Block"]

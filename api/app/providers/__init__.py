@@ -5,6 +5,7 @@ attribution engine and orchestrators can treat them uniformly.  For now
 all upstream providers raise ``NotImplementedError``; the
 :class:`DemoBlockchainProvider` will gain a synthetic data backend later.
 """
+
 from app.providers.base import BlockchainProvider, CanonicalTransaction, ProviderRegistry
 from app.providers.bitcoin import BitcoinProvider
 from app.providers.bnb import BnbProvider

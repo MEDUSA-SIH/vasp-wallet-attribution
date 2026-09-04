@@ -1,4 +1,5 @@
 """Risk alert evaluation (Phase 14)."""
+
 from __future__ import annotations
 
 from typing import Any

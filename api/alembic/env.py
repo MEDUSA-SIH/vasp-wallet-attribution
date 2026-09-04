@@ -2,6 +2,7 @@
 """Alembic environment (Phase 8). Loads DATABASE_URL from app.config and uses
 SQLAlchemy's metadata for autogeneration.
 """
+
 from __future__ import annotations
 
 import asyncio

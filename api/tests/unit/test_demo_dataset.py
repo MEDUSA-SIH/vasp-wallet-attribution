@@ -1,4 +1,5 @@
 """Demo dataset unit tests (Phase 22)."""
+
 from __future__ import annotations
 
 import pytest
@@ -15,12 +16,17 @@ def test_dataset_loads() -> None:
     assert ds.mixers, "mixers dict is populated"
 
 
-@pytest.mark.parametrize("case_id,suspect,expected_vasp", [
-    ("case1", "0xDEMO_case1_suspect_001", "vasp_alpha"),
-    ("case2", "0xDEMO_case2_suspect_001", "vasp_bravo"),
-    ("case3", "0xDEMO_case3_suspect_001", "vasp_charlie"),
-])
-def test_each_case_has_suspect(ds: DemoDataset, case_id: str, suspect: str, expected_vasp: str) -> None:
+@pytest.mark.parametrize(
+    "case_id,suspect,expected_vasp",
+    [
+        ("case1", "0xDEMO_case1_suspect_001", "vasp_alpha"),
+        ("case2", "0xDEMO_case2_suspect_001", "vasp_bravo"),
+        ("case3", "0xDEMO_case3_suspect_001", "vasp_charlie"),
+    ],
+)
+def test_each_case_has_suspect(
+    ds: DemoDataset, case_id: str, suspect: str, expected_vasp: str
+) -> None:
     case = next(c for c in ds.cases if c["id"] == case_id)
     assert case["suspect_address"] == suspect
     # The expected VASP appears somewhere in the tx graph.

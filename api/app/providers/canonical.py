@@ -3,6 +3,7 @@
 All providers normalise their chain-specific transaction shape into the
 :class:`CanonicalTransaction` before downstream code touches it.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field

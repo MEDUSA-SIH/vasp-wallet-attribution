@@ -1,4 +1,5 @@
 """Structured logging via structlog (Phase 25)."""
+
 from __future__ import annotations
 
 import logging

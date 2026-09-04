@@ -1,4 +1,5 @@
 """Versioned v1 routers."""
+
 from fastapi import APIRouter
 
 from app.api.v1.admin import router as admin_router

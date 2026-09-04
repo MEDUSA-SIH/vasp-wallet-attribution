@@ -1,4 +1,5 @@
 """Reusable FastAPI dependencies shared across routers."""
+
 from app.dependencies import (
     CurrentInvestigatorDep,
     RedisDep,

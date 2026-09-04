@@ -3,6 +3,7 @@
 These tests do not require a real DB – they instantiate the SQLAlchemy
 models and verify metadata.
 """
+
 from __future__ import annotations
 
 from app.db.base import BaseModel
@@ -51,8 +52,21 @@ def test_all_tables_registered() -> None:
 def test_models_instantiable() -> None:
     # Smoke test – each model can be referenced via its class.
     for cls in (
-        Investigator, Case, Wallet, Chain, Token, Block, Transaction,
-        VASP, Cluster, ClusterWallet, Attribution, Risk, Investigation,
-        Report, APIRequest, AuditEvent,
+        Investigator,
+        Case,
+        Wallet,
+        Chain,
+        Token,
+        Block,
+        Transaction,
+        VASP,
+        Cluster,
+        ClusterWallet,
+        Attribution,
+        Risk,
+        Investigation,
+        Report,
+        APIRequest,
+        AuditEvent,
     ):
         assert cls.__name__
