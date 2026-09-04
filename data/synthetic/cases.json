@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "description": "High-level definitions of the 8 synthetic test cases (Phase 22).",
+  "chain_conventions": {
+    "ethereum": "0xDEMO_<case>_<role>_<n>  (40 hex chars after prefix)",
+    "bitcoin":  "DEMO<case><role><n>        (base58-ish, prefixed DEMO)",
+    "tron":     "TDEMO<case><role><n>      (T-prefix)",
+    "bnb":      "0xDEMO_<case>_<role>_<n>  (EVM-style)",
+    "solana":   "DEMOSOL<case><role><n>",
+    "polygon":  "0xDEMO_<case>_<role>_<n>  (EVM-style)"
+  },
+  "cases": [
+    {
+      "id": "case1",
+      "pattern": "Direct VASP deposit",
+      "chain": "ethereum",
+      "suspect_address": "0xDEMO_case1_suspect_001",
+      "expected_vasp": "vasp_alpha",
+      "expected_outcome": "single_candidate",
+      "notes": "Trivial 1-hop. Direct transfer to a labeled VASP deposit wallet."
+    },
+    {
+      "id": "case2",
+      "pattern": "One intermediary",
+      "chain": "ethereum",
+      "suspect_address": "0xDEMO_case2_suspect_001",
+      "expected_vasp": "vasp_bravo",
+      "expected_outcome": "single_candidate",
+      "notes": "Suspect → A → VASP_Bravo deposit wallet."
+    },
+    {
+      "id": "case3",
+      "pattern": "Multiple intermediaries",
+      "chain": "ethereum",
+      "suspect_address": "0xDEMO_case3_suspect_001",
+      "expected_vasp": "vasp_charlie",
+      "expected_outcome": "single_candidate_with_decay",
+      "notes": "4-hop chain ending at VASP_Charlie deposit wallet."
+    },
+    {
+      "id": "case4",
+      "pattern": "Multiple candidate VASPs",
+      "chain": "ethereum",
+      "suspect_address": "0xDEMO_case4_suspect_001",
+      "expected_vasp": ["vasp_delta", "vasp_echo"],
+      "expected_outcome": "ranked_multi_candidate",
+      "notes": "Suspect fans out to three VASPs; ranking required."
+    },
+    {
+      "id": "case5",
+      "pattern": "Mixer",
+      "chain": "ethereum",
+      "suspect_address": "0xDEMO_case5_suspect_001",
+      "expected_vasp": null,
+      "expected_outcome": "insufficient_evidence",
+      "notes": "Funds reach a labeled mixer. Attribution stops; no downstream VASP."
+    },
+    {
+      "id": "case6",
+      "pattern": "Bridge (cross-chain)",
+      "chain": "ethereum",
+      "bridge_target_chain": "bitcoin",
+      "suspect_address": "0xDEMO_case6_suspect_001",
+      "expected_vasp": "vasp_foxtrot",
+      "expected_outcome": "single_candidate_with_bridge_decay",
+      "notes": "Suspect on ETH → bridge contract → BTC VASP_Foxtrot deposit address."
+    },
+    {
+      "id": "case7",
+      "pattern": "False candidate (high-degree noise)",
+      "chain": "ethereum",
+      "suspect_address": "0xDEMO_case7_suspect_001",
+      "expected_vasp": null,
+      "expected_outcome": "false_candidate_filtered",
+      "notes": "Suspect sends to a popular hub that distributes to many unrelated wallets. No VASP attribution."
+    },
+    {
+      "id": "case8",
+      "pattern": "Ambiguous / insufficient evidence",
+      "chain": "ethereum",
+      "suspect_address": "0xDEMO_case8_suspect_001",
+      "expected_vasp": null,
+      "expected_outcome": "insufficient_evidence",
+      "notes": "Funds reach a single dead-end wallet with no further hops."
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "description": "Fake cross-chain bridges used by the demo dataset.",
+  "bridges": [
+    {
+      "id": "bridge_eth_btc",
+      "name": "DemoBridge ETH→BTC",
+      "source_chains": ["ethereum"],
+      "target_chains": ["bitcoin"],
+      "eth_contract": "0xDEMO_case6_bridge_eth_01"
+    }
+  ]
+}

@@ -54,9 +54,12 @@ logs/
 docker-compose.override.local.yml
 
 # Data (offline demo datasets)
+# The JSON fixtures that drive the synthetic demo path ARE checked in.
+# Future bulk datasets (CSV/parquet for >10k rows) stay local.
 data/synthetic/*.csv
-data/synthetic/*.json
 data/synthetic/*.parquet
+!data/synthetic/*.json
+!data/synthetic/README.md
 
 # SDD workspaces
 .superpowers/
