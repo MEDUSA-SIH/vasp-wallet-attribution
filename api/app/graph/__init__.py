@@ -1,4 +1,5 @@
 """Graph data model & NetworkX-backed store (Phase 6 + Phase 11)."""
+
 from app.graph.algorithms import (
     bfs,
     detect_clusters,

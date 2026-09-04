@@ -14,6 +14,7 @@ Eight-stage pipeline:
 The :class:`AttributionEngine` is the only public entry point. Sub-modules
 are NOT considered public — consumers must use the engine.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field

@@ -1,4 +1,5 @@
 """Cases router (Phase 12)."""
+
 from __future__ import annotations
 
 from uuid import UUID

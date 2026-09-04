@@ -1,4 +1,5 @@
 """Graph node/edge type definitions (Phase 6)."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -19,11 +20,11 @@ class NodeKind(StrEnum):
 class EdgeKind(StrEnum):
     """Types of edges stored in the transaction graph."""
 
-    TRANSFER = "transfer"            # wallet → wallet transfer
-    CONTROL = "control"              # cluster → wallet membership
-    ATTRIBUTION = "attribution"      # wallet → vasp attribution
-    BRIDGE = "bridge"                # cross-chain bridge hop
-    ALIAS = "alias"                  # same owner across chains
+    TRANSFER = "transfer"  # wallet → wallet transfer
+    CONTROL = "control"  # cluster → wallet membership
+    ATTRIBUTION = "attribution"  # wallet → vasp attribution
+    BRIDGE = "bridge"  # cross-chain bridge hop
+    ALIAS = "alias"  # same owner across chains
 
 
 @dataclass(slots=True, frozen=True)

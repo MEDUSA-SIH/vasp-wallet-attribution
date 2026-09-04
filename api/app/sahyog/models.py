@@ -1,4 +1,5 @@
 """SAHYOG message models (Phase 7)."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field

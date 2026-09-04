@@ -1,4 +1,5 @@
 """Application configuration via pydantic-settings (Phase 25)."""
+
 from __future__ import annotations
 
 from functools import lru_cache

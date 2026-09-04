@@ -1,4 +1,5 @@
 """Provider factory unit tests (Phase 20 / 22)."""
+
 from __future__ import annotations
 
 import pytest

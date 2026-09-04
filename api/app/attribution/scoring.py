@@ -23,6 +23,7 @@ candidates by ``proximity_rank`` only; the score is shown alongside.
 Both implementations are deliberately simple and explainable. No
 ML, no opaque weights.
 """
+
 from __future__ import annotations
 
 from datetime import UTC, datetime
@@ -71,12 +72,12 @@ def _proximity_components(cand) -> dict[str, float]:
 
 
 CONFIDENCE_WEIGHTS: dict[str, float] = {
-    "evidence_tier_score":       1 / 6,
-    "label_source_agreement":    1 / 6,
-    "address_reuse_signal":      1 / 6,
-    "cluster_consistency":       1 / 6,
-    "path_integrity":            1 / 6,
-    "evidence_freshness":        1 / 6,
+    "evidence_tier_score": 1 / 6,
+    "label_source_agreement": 1 / 6,
+    "address_reuse_signal": 1 / 6,
+    "cluster_consistency": 1 / 6,
+    "path_integrity": 1 / 6,
+    "evidence_freshness": 1 / 6,
 }
 
 
@@ -92,11 +93,13 @@ def compute_confidence(scored: list[ScoredCandidate]) -> list[ScoredCandidate]:
         if cand.hits_mixer:
             s.confidence_score = 0.0
             s.confidence_band = "low"
-            s.evidence = [EvidenceItem(
-                code="mixer_stop",
-                weight=0.0,
-                detail="Mixer hard-stop: confidence set to 0 (Phase 14).",
-            )]
+            s.evidence = [
+                EvidenceItem(
+                    code="mixer_stop",
+                    weight=0.0,
+                    detail="Mixer hard-stop: confidence set to 0 (Phase 14).",
+                )
+            ]
             continue
 
         components = _confidence_components(cand, tier)
@@ -182,35 +185,45 @@ def _evidence_items(components: dict[str, float], cand) -> list[EvidenceItem]:
     """Turn per-component scores into plain-language evidence notes."""
     items: list[EvidenceItem] = []
     if cand.terminal_role == "vasp" and cand.vasp_id:
-        items.append(EvidenceItem(
-            code="vasp_label",
-            weight=1.0,
-            detail=f"Terminal wallet is tagged as a deposit of VASP '{cand.vasp_id}'.",
-        ))
+        items.append(
+            EvidenceItem(
+                code="vasp_label",
+                weight=1.0,
+                detail=f"Terminal wallet is tagged as a deposit of VASP '{cand.vasp_id}'.",
+            )
+        )
     if cand.hits_mixer:
-        items.append(EvidenceItem(
-            code="mixer_stop",
-            weight=0.0,
-            detail="Funds passed through a known mixer; attribution stops here (Phase 14).",
-        ))
+        items.append(
+            EvidenceItem(
+                code="mixer_stop",
+                weight=0.0,
+                detail="Funds passed through a known mixer; attribution stops here (Phase 14).",
+            )
+        )
     if cand.crosses_bridge:
-        items.append(EvidenceItem(
-            code="bridge_hop",
-            weight=-0.1,
-            detail=f"Cross-chain bridge hop (id={cand.bridge_id}); confidence degraded per Phase 14.",
-        ))
+        items.append(
+            EvidenceItem(
+                code="bridge_hop",
+                weight=-0.1,
+                detail=f"Cross-chain bridge hop (id={cand.bridge_id}); confidence degraded per Phase 14.",
+            )
+        )
     if cand.hops == len(cand.edges) and cand.edges:
-        items.append(EvidenceItem(
-            code="path_integrity",
-            weight=components["path_integrity"],
-            detail=f"Every hop is backed by an on-chain transaction ({len(cand.edges)} hops).",
-        ))
+        items.append(
+            EvidenceItem(
+                code="path_integrity",
+                weight=components["path_integrity"],
+                detail=f"Every hop is backed by an on-chain transaction ({len(cand.edges)} hops).",
+            )
+        )
     if components["evidence_freshness"] < 1.0:
-        items.append(EvidenceItem(
-            code="stale_path",
-            weight=components["evidence_freshness"],
-            detail="Most recent hop is older than 90 days; freshness reduced.",
-        ))
+        items.append(
+            EvidenceItem(
+                code="stale_path",
+                weight=components["evidence_freshness"],
+                detail="Most recent hop is older than 90 days; freshness reduced.",
+            )
+        )
     return items
 
 

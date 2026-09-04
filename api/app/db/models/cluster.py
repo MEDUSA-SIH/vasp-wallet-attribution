@@ -1,4 +1,5 @@
 """Cluster models (Phase 8)."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING

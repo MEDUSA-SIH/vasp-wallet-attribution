@@ -8,6 +8,7 @@ The narrative NEVER uses the words "guaranteed", "definitely", or any
 absolute phrasing — language is calibrated to the evidence tier and
 the confidence band.
 """
+
 from __future__ import annotations
 
 from app.attribution.types import EvidenceTier, ScoredCandidate
@@ -40,13 +41,9 @@ def _narrative(s: ScoredCandidate) -> str:
             "insufficient signal to attribute."
         )
     elif cand.terminal_role == "dead_end":
-        lead = (
-            "Funds reach a single dead-end wallet with no further hops."
-        )
+        lead = "Funds reach a single dead-end wallet with no further hops."
     else:
-        lead = (
-            f"Terminal role is '{cand.terminal_role}'; no VASP label found."
-        )
+        lead = f"Terminal role is '{cand.terminal_role}'; no VASP label found."
 
     # Bridge statement.
     bridge = ""
@@ -65,11 +62,11 @@ def _narrative(s: ScoredCandidate) -> str:
 
     # Tier + band.
     tier_label = {
-        EvidenceTier.TIER_1_DEPOSIT_LABEL:   "Tier 1 (Direct VASP deposit label)",
+        EvidenceTier.TIER_1_DEPOSIT_LABEL: "Tier 1 (Direct VASP deposit label)",
         EvidenceTier.TIER_2_HOT_WALLET_LABEL: "Tier 2 (Tagged hot-wallet cluster)",
-        EvidenceTier.TIER_3_BEHAVIORAL:       "Tier 3 (Behavioral / consolidation only)",
-        EvidenceTier.TIER_4_TOPOLOGICAL:      "Tier 4 (Heuristic / topological only)",
-        EvidenceTier.TIER_NONE:               "Insufficient evidence",
+        EvidenceTier.TIER_3_BEHAVIORAL: "Tier 3 (Behavioral / consolidation only)",
+        EvidenceTier.TIER_4_TOPOLOGICAL: "Tier 4 (Heuristic / topological only)",
+        EvidenceTier.TIER_NONE: "Insufficient evidence",
     }.get(tier, "Unknown")
     tier_line = (
         f" Evidence tier: {tier_label}. Confidence band: {band} "

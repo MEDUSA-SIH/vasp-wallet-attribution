@@ -1,4 +1,5 @@
 """Audit event model (Phase 8 + Phase 25)."""
+
 from __future__ import annotations
 
 from datetime import datetime

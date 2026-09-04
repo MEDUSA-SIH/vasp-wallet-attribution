@@ -13,6 +13,7 @@ with:
 
 Stage B is a pure transformation; it does not consult providers.
 """
+
 from __future__ import annotations
 
 from app.attribution.types import Candidate, ScoredCandidate

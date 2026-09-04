@@ -8,6 +8,7 @@ This module provides:
 Real authentication flows will be wired in Stage 1+; the helpers below are
 kept minimal so subsequent phases can plug in concrete handlers.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass

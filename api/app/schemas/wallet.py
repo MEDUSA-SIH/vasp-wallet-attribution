@@ -1,4 +1,5 @@
 """Wallet schemas (Phase 8 + Phase 11)."""
+
 from __future__ import annotations
 
 from datetime import datetime
