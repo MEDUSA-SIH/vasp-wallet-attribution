@@ -1,0 +1,52 @@
+# CODEOWNERS
+# Each line is a file pattern followed by GitHub usernames.
+# The last matching pattern wins. People listed are auto-requested as
+# reviewers when a PR touches those files.
+#
+# Update this file when ownership changes. The current owners reflect
+# the work-package split documented in docs/work-packages.md.
+
+# --- Default ownership: any committer may review ---------------------------
+*                                   @MEDUSA-SIH/maintainers
+
+# --- Phase 6 + Phase 11 – Graph store & algorithms ----------------------
+/api/app/graph/                     @MEDUSA-SIH/graph-team
+/api/app/api/v1/wallets.py          @MEDUSA-SIH/graph-team
+
+# --- Phase 7 – SAHYOG adapter -------------------------------------------
+/api/app/sahyog/                   @MEDUSA-SIH/integration-team
+
+# --- Phase 8 – Database models & migrations ----------------------------
+/api/app/db/                       @MEDUSA-SIH/data-team
+/api/alembic/                      @MEDUSA-SIH/data-team
+
+# --- Phase 10 – Attribution engine -------------------------------------
+/api/app/attribution/              @MEDUSA-SIH/attribution-team
+/api/app/services/attribution_service.py  @MEDUSA-SIH/attribution-team
+/api/app/api/v1/attribution.py     @MEDUSA-SIH/attribution-team
+
+# --- Phase 12 – Cases / investigators -----------------------------------
+/api/app/api/v1/cases.py           @MEDUSA-SIH/cases-team
+/api/app/services/case_service.py  @MEDUSA-SIH/cases-team
+
+# --- Phase 14 – Risk typologies & alerts -------------------------------
+/api/app/risk/                     @MEDUSA-SIH/risk-team
+
+# --- Phase 17 – Reporting ----------------------------------------------
+/api/app/api/v1/reports.py         @MEDUSA-SIH/reporting-team
+/api/app/services/report_service.py @MEDUSA-SIH/reporting-team
+
+# --- Phase 20 – Blockchain providers -----------------------------------
+/api/app/providers/                @MEDUSA-SIH/providers-team
+
+# --- Phase 24 – Deployment / Docker ------------------------------------
+/Dockerfile                        @MEDUSA-SIH/platform-team
+**/Dockerfile                      @MEDUSA-SIH/platform-team
+/docker-compose*.yml               @MEDUSA-SIH/platform-team
+/Makefile                          @MEDUSA-SIH/platform-team
+/.github/workflows/                @MEDUSA-SIH/platform-team
+
+# --- Docs ---------------------------------------------------------------
+/docs/                             @MEDUSA-SIH/docs-team
+/CONTRIBUTING.md                   @MEDUSA-SIH/docs-team
+/README.md                         @MEDUSA-SIH/docs-team

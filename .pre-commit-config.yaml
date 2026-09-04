@@ -1,0 +1,45 @@
+# .pre-commit-config.yaml
+# Run: pip install pre-commit && pre-commit install
+#
+# Local hooks that fire before every commit. Keep this file small – CI is
+# the source of truth, these hooks are just a quick local guard.
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+        - id: ruff
+          args: ["--fix"]
+          files: '^(api|packages)/.*\.py$'
+        - id: ruff-format
+          files: '^(api|packages)/.*\.py$'
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+        - id: trailing-whitespace
+        - id: end-of-file-fixer
+        - id: check-yaml
+        - id: check-toml
+        - id: check-merge-conflict
+        - id: check-added-large-files
+          args: ["--maxkb=500"]
+        - id: detect-private-key
+        - id: mixed-line-ending
+
+  - repo: local
+    hooks:
+        - id: import-smoke
+          name: App import smoke check
+          entry: python -c "from app.main import create_app; create_app()"
+          language: python
+          pass_filenames: false
+          additional_dependencies: []
+          files: '^api/app/.*\.py$'
+
+        - id: pyproject-valid
+          name: Validate pyproject.toml files
+          entry: python -c "import tomllib,sys; tomllib.load(open(sys.argv[1],'rb'))"
+          language: python
+          pass_filenames: true
+          files: '.*/pyproject\.toml$'
