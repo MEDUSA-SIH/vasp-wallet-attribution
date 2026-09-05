@@ -29,8 +29,9 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # Override sqlalchemy.url with the one from pydantic-settings.
+# Use the async URL so async_engine_from_config selects asyncpg.
 settings = get_settings()
-config.set_main_option("sqlalchemy.url", settings.database_url_sync)
+config.set_main_option("sqlalchemy.url", settings.database_url)
 
 target_metadata = BaseModel.metadata
 
@@ -38,7 +39,7 @@ target_metadata = BaseModel.metadata
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode."""
     context.configure(
-        url=settings.database_url_sync,
+        url=settings.database_url,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
