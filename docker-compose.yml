@@ -64,7 +64,7 @@ services:
     volumes:
         - ./api/app:/home/sih26182/app/app
         - ./api/alembic:/home/sih26182/app/alembic
-        - ../data:/home/sih26182/data:ro
+        - ./data:/home/sih26182/data:ro
     healthcheck:
         test: ["CMD", "python", "-c", "import urllib.request, sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/api/v1/health', timeout=3).status == 200 else 1)"]
         interval: 10s
