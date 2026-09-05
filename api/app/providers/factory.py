@@ -36,7 +36,8 @@ def build_default_provider_registry(settings: Settings | None = None) -> Provide
 
     Honours ``settings.demo_mode``:
       - ``True``  → register one ``DemoBlockchainProvider`` per chain.
-      - ``False`` → register the per-chain stubs (raise on use).
+      - ``False`` → register live providers where enabled (WP-04: ethereum),
+        otherwise per-chain stubs (raise on use).
 
     The function is pure: calling it twice returns two distinct
     registries, but the underlying demo dataset is shared (singleton).
@@ -58,7 +59,10 @@ def build_default_provider_registry(settings: Settings | None = None) -> Provide
             "polygon": PolygonProvider,
         }
         for _code, cls in _stub_map.items():
-            registry.register(cls())
+            if _code == "ethereum" and settings.provider_ethereum_enabled:
+                registry.register(EthereumProvider(settings=settings))
+            else:
+                registry.register(cls())
 
     return registry
 
