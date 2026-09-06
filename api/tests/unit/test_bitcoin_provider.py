@@ -1,4 +1,4 @@
-"""Bitcoin live provider tests — mocked QuickNode Blockbook (WP-03)."""
+"""Bitcoin live provider tests — mocked Tatum REST + gateway (WP-03)."""
 
 from __future__ import annotations
 
@@ -16,133 +16,86 @@ from app.providers.factory import build_default_provider_registry
 ADDR = "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
 OTHER = "bc1qother000000000000000000000000000000000"
 
-BB_TX_RECV = {
-    "txid": "txrecv001",
-    "version": 2,
-    "lockTime": 0,
-    "blockHash": "00000000000000000001",
-    "blockHeight": 840000,
-    "confirmations": 10,
-    "blockTime": 1700000000,
-    "value": 99500,
-    "valueIn": 100000,
-    "fees": 500,
-    "size": 225,
-    "vin": [
+TATUM_TX_RECV = {
+    "hash": "txrecv001",
+    "blockNumber": 840000,
+    "time": 1700000000000,
+    "fee": 500,
+    "inputs": [
         {
-            "txid": "prev1",
-            "vout": 0,
-            "sequence": 4294967295,
-            "n": 0,
-            "addresses": [OTHER],
-            "isAddress": True,
-            "isOwn": False,
-            "value": 100000,
+            "coin": {"height": 839999, "value": 100000, "address": OTHER},
+            "prevout": {"hash": "prev1", "index": 0},
         }
     ],
-    "vout": [
-        {
-            "value": 90000,
-            "n": 0,
-            "spent": False,
-            "hex": "0014ab",
-            "addresses": [ADDR],
-            "isAddress": True,
-        },
-        {
-            "value": 9500,
-            "n": 1,
-            "spent": False,
-            "hex": "0014cd",
-            "addresses": [OTHER],
-            "isAddress": True,
-        },
+    "outputs": [
+        {"value": 90000, "address": ADDR},
+        {"value": 9500, "address": OTHER},
     ],
 }
 
-BB_TX_SEND = {
-    "txid": "txsend002",
-    "version": 2,
-    "lockTime": 0,
-    "blockHash": "00000000000000000002",
-    "blockHeight": 840001,
-    "confirmations": 9,
-    "blockTime": 1700000100,
-    "value": 80000,
-    "valueIn": 90000,
-    "fees": 800,
-    "size": 220,
-    "vin": [
+TATUM_TX_SEND = {
+    "hash": "txsend002",
+    "blockNumber": 840001,
+    "time": 1700000100000,
+    "fee": 800,
+    "inputs": [
         {
-            "txid": "prev2",
-            "vout": 1,
-            "sequence": 4294967295,
-            "n": 0,
-            "addresses": [ADDR],
-            "isAddress": True,
-            "isOwn": True,
-            "value": 90000,
+            "coin": {"height": 840000, "value": 90000, "address": ADDR},
+            "prevout": {"hash": "prev2", "index": 1},
         }
     ],
-    "vout": [
-        {
-            "value": 80000,
-            "n": 0,
-            "spent": False,
-            "hex": "0014ef",
-            "addresses": [OTHER],
-            "isAddress": True,
-        }
+    "outputs": [
+        {"value": 80000, "address": OTHER},
     ],
 }
 
-BB_PAGE = {
-    "address": ADDR,
-    "balance": "90000",
-    "totalReceived": "90000",
-    "totalSent": "0",
-    "unconfirmedBalance": "0",
-    "unconfirmedTxs": 0,
-    "txs": 2,
-    "transactions": [BB_TX_SEND, BB_TX_RECV],  # newest-first on wire
+TATUM_BALANCE = {
+    "balance": "0.0009",
+    "incoming": "0.0009",
+    "outgoing": "0",
+    "incomingPending": "0",
+    "outgoingPending": "0",
 }
 
 
 def _mock_handler(request: httpx.Request) -> httpx.Response:
     import json as _json
 
-    body = _json.loads(request.content.decode() or "{}")
-    method = body.get("method")
-    if method == "bb_getAddress":
-        return httpx.Response(200, json={"jsonrpc": "2.0", "id": 1, "result": BB_PAGE})
-    if method == "getblockchaininfo":
-        return httpx.Response(200, json={"jsonrpc": "2.0", "id": 1, "result": {"blocks": 840002}})
-    if method == "getblockcount":
-        return httpx.Response(200, json={"jsonrpc": "2.0", "id": 1, "result": 840002})
-    return httpx.Response(
-        200,
-        json={
-            "jsonrpc": "2.0",
-            "id": 1,
-            "error": {"code": -32601, "message": "Method not found"},
-        },
-    )
+    path = request.url.path
+    if path.endswith("/v3/bitcoin/transaction/address/" + ADDR):
+        return httpx.Response(200, json=[TATUM_TX_SEND, TATUM_TX_RECV])  # newest-first
+    if path.endswith("/v3/bitcoin/address/balance/" + ADDR):
+        return httpx.Response(200, json=TATUM_BALANCE)
+    if request.url.host == "bitcoin-mainnet.gateway.tatum.io":
+        body = _json.loads(request.content.decode() or "{}")
+        if body.get("method") == "getblockcount":
+            return httpx.Response(200, json={"jsonrpc": "2.0", "id": 1, "result": 840002})
+        return httpx.Response(
+            200,
+            json={
+                "jsonrpc": "2.0",
+                "id": 1,
+                "error": {"code": -32601, "message": "Method not found"},
+            },
+        )
+    return httpx.Response(404, json={"message": "not found"})
 
 
 def _make_provider() -> BitcoinProvider:
     settings = Settings(
         demo_mode=False,
         provider_bitcoin_enabled=True,
-        bitcoin_provider_url="https://qn.example/",
+        blockchain_api_key="test-key",
+        bitcoin_provider_url="https://tatum.example/",
     )
     client = httpx.AsyncClient(
-        transport=httpx.MockTransport(_mock_handler), base_url="https://qn.example"
+        transport=httpx.MockTransport(_mock_handler), base_url="https://tatum.example"
     )
     return BitcoinProvider(settings=settings, client=client)
 
 
 @pytest.mark.asyncio
-async def test_get_transactions_maps_bb_to_canonical() -> None:
+async def test_get_transactions_maps_tatum_to_canonical() -> None:
     provider = _make_provider()
     txs = await provider.get_transactions(ADDR)
     assert [t.tx_hash for t in txs] == ["txrecv001", "txsend002"]  # ascending
@@ -155,7 +108,7 @@ async def test_get_transactions_maps_bb_to_canonical() -> None:
     assert txs[0].block_height == 840000
     assert txs[0].success is True
     assert txs[0].fee == Decimal("0.000005")
-    assert txs[0].raw.get("source") == "quicknode-bb"
+    assert txs[0].raw.get("source") == "tatum-rest"
     await provider.aclose()
 
 
@@ -169,14 +122,14 @@ async def test_get_transactions_applies_time_filter_and_limit() -> None:
 
 
 @pytest.mark.asyncio
-async def test_get_balance_converts_sats() -> None:
+async def test_get_balance_reads_btc_units() -> None:
     provider = _make_provider()
     assert await provider.get_balance(ADDR) == Decimal("0.0009")
     await provider.aclose()
 
 
 @pytest.mark.asyncio
-async def test_get_block_height() -> None:
+async def test_get_block_height_via_gateway() -> None:
     provider = _make_provider()
     assert await provider.get_block_height() == 840002
     await provider.aclose()
@@ -192,24 +145,37 @@ async def test_healthcheck_true() -> None:
 @pytest.mark.asyncio
 async def test_upstream_error_raises_provider_error() -> None:
     def _fail(request: httpx.Request) -> httpx.Response:
-        return httpx.Response(
-            200,
-            json={
-                "jsonrpc": "2.0",
-                "id": 1,
-                "error": {"code": -32601, "message": "Method not found"},
-            },
-        )
+        return httpx.Response(401, json={"message": "Unauthorized"})
 
     settings = Settings(
         demo_mode=False,
         provider_bitcoin_enabled=True,
-        bitcoin_provider_url="https://qn.example/",
+        blockchain_api_key="bad-key",
+        bitcoin_provider_url="https://tatum.example/",
     )
-    client = httpx.AsyncClient(transport=httpx.MockTransport(_fail), base_url="https://qn.example")
+    client = httpx.AsyncClient(
+        transport=httpx.MockTransport(_fail), base_url="https://tatum.example"
+    )
     provider = BitcoinProvider(settings=settings, client=client)
     with pytest.raises(ProviderError):
         await provider.get_block_height()
+    await provider.aclose()
+
+
+@pytest.mark.asyncio
+async def test_missing_api_key_raises_provider_error() -> None:
+    settings = Settings(
+        demo_mode=False,
+        provider_bitcoin_enabled=True,
+        blockchain_api_key="",
+        bitcoin_provider_url="https://tatum.example/",
+    )
+    client = httpx.AsyncClient(
+        transport=httpx.MockTransport(_mock_handler), base_url="https://tatum.example"
+    )
+    provider = BitcoinProvider(settings=settings, client=client)
+    with pytest.raises(ProviderError):
+        await provider.get_balance(ADDR)
     await provider.aclose()
 
 
@@ -226,20 +192,20 @@ async def test_rate_limit_retries_once() -> None:
     calls = {"n": 0}
 
     def _flaky(request: httpx.Request) -> httpx.Response:
-        import json as _json
-
-        body = _json.loads(request.content.decode() or "{}")
-        if body.get("method") == "bb_getAddress" and calls["n"] == 0:
+        if "transaction/address" in request.url.path and calls["n"] == 0:
             calls["n"] += 1
-            return httpx.Response(429, json={"error": "rate limited"})
+            return httpx.Response(429, json={"message": "rate limited"})
         return _mock_handler(request)
 
     settings = Settings(
         demo_mode=False,
         provider_bitcoin_enabled=True,
-        bitcoin_provider_url="https://qn.example/",
+        blockchain_api_key="test-key",
+        bitcoin_provider_url="https://tatum.example/",
     )
-    client = httpx.AsyncClient(transport=httpx.MockTransport(_flaky), base_url="https://qn.example")
+    client = httpx.AsyncClient(
+        transport=httpx.MockTransport(_flaky), base_url="https://tatum.example"
+    )
     provider = BitcoinProvider(settings=settings, client=client)
     txs = await provider.get_transactions(ADDR, limit=1)
     assert len(txs) == 1
@@ -251,7 +217,8 @@ def test_factory_registers_live_bitcoin_when_enabled() -> None:
     settings = Settings(
         demo_mode=False,
         provider_bitcoin_enabled=True,
-        bitcoin_provider_url="https://qn.example/",
+        blockchain_api_key="test-key",
+        bitcoin_provider_url="https://tatum.example/",
     )
     reg = build_default_provider_registry(settings)
     provider = reg.get("bitcoin")
