@@ -1,14 +1,13 @@
-"""Live ETH RPC (Tatum) + Phase A graph integration.
+"""Live ETH RPC + Phase A graph integration.
 
 CI-visible: these tests run on every `pytest -v` (no extra flag).
-- ETH RPC tests hit https://ethereum-mainnet.gateway.tatum.io via JSON-RPC
-  and skip gracefully if the gateway is unreachable (CI network flaky).
+- ETH RPC tests hit ETH_RPC_URL (set in env/.env, e.g. Tatum gateway) via
+  JSON-RPC and skip gracefully when ETH_RPC_URL is unset or gateway
+  unreachable — no URL hardcoded.
 - Phase A tests exercise WP-19 `time_window_bfs`, `pagerank_centrality`,
   `temporal_shortest_path`, and `PagerankLookup` against a deterministic
   in-memory graph — they always run (no network) and guard the
   prod-grade code shipped in Tasks 1-4.
-
-Env override: set ETH_RPC_URL to test a different endpoint.
 """
 
 from __future__ import annotations
@@ -27,19 +26,30 @@ from app.graph.models import EdgeKind, GraphEdge, GraphNode, NodeKind
 from app.graph.store import GraphStore
 
 # ---------------------------------------------------------------------------
-# ETH RPC live — Tatum gateway
+# ETH RPC live — env-driven (no hardcode)
 # ---------------------------------------------------------------------------
+# Set ETH_RPC_URL in env/.env to enable live RPC checks, e.g.:
+#   ETH_RPC_URL=https://ethereum-mainnet.gateway.tatum.io
+# Tests skip gracefully when ETH_RPC_URL is unset (CI without creds) or
+# gateway unreachable (rate-limit/offline). No URL is hardcoded.
 
-_TATUM_URL = os.getenv("ETH_RPC_URL", "https://ethereum-mainnet.gateway.tatum.io")
 _VITALIK = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
 _TIMEOUT = 8.0
 
 
+def _rpc_url() -> str:
+    url = os.getenv("ETH_RPC_URL", "").strip()
+    if not url:
+        pytest.skip("ETH_RPC_URL not set — live RPC test skipped (set ETH_RPC_URL to enable)")
+    return url
+
+
 def test_live_tatum_eth_block_number_returns_hex() -> None:  # noqa: N802
-    """Live: Tatum gateway returns a hex block number."""
+    """Live: gateway returns a hex block number (requires ETH_RPC_URL)."""
+    url = _rpc_url()
     payload = {"jsonrpc": "2.0", "id": 1, "method": "eth_blockNumber", "params": []}
     try:
-        r = httpx.post(_TATUM_URL, json=payload, timeout=_TIMEOUT)
+        r = httpx.post(url, json=payload, timeout=_TIMEOUT)
     except httpx.RequestError as exc:
         pytest.skip(f"Tatum gateway unreachable: {exc}")
     if r.status_code != 200:
@@ -54,7 +64,8 @@ def test_live_tatum_eth_block_number_returns_hex() -> None:  # noqa: N802
 
 
 def test_live_tatum_eth_get_balance_vitalik() -> None:  # noqa: N802
-    """Live: eth_getBalance for a known address returns hex balance."""
+    """Live: eth_getBalance for a known address returns hex balance (requires ETH_RPC_URL)."""
+    url = _rpc_url()
     payload = {
         "jsonrpc": "2.0",
         "id": 2,
@@ -62,7 +73,7 @@ def test_live_tatum_eth_get_balance_vitalik() -> None:  # noqa: N802
         "params": [_VITALIK, "latest"],
     }
     try:
-        r = httpx.post(_TATUM_URL, json=payload, timeout=_TIMEOUT)
+        r = httpx.post(url, json=payload, timeout=_TIMEOUT)
     except httpx.RequestError as exc:
         pytest.skip(f"Tatum gateway unreachable: {exc}")
     if r.status_code != 200:
@@ -76,10 +87,11 @@ def test_live_tatum_eth_get_balance_vitalik() -> None:  # noqa: N802
 
 
 def test_live_tatum_eth_chain_id_is_mainnet() -> None:  # noqa: N802
-    """Live: eth_chainId must be 0x1 for mainnet."""
+    """Live: eth_chainId must be 0x1 for mainnet (requires ETH_RPC_URL)."""
+    url = _rpc_url()
     payload = {"jsonrpc": "2.0", "id": 3, "method": "eth_chainId", "params": []}
     try:
-        r = httpx.post(_TATUM_URL, json=payload, timeout=_TIMEOUT)
+        r = httpx.post(url, json=payload, timeout=_TIMEOUT)
     except httpx.RequestError as exc:
         pytest.skip(f"Tatum gateway unreachable: {exc}")
     if r.status_code != 200:

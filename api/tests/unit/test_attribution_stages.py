@@ -110,6 +110,7 @@ def test_filtering_demotes_high_degree_to_hub() -> None:
 
 def test_filtering_pagerank_demotes_hub() -> None:
     import networkx as nx
+
     from app.graph.models import EdgeKind, GraphEdge, GraphNode, NodeKind
     from app.graph.store import GraphStore
 
