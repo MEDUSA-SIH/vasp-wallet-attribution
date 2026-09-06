@@ -6,7 +6,7 @@ from datetime import UTC, datetime
 
 import networkx as nx
 
-from app.graph.algorithms import time_window_bfs
+from app.graph.algorithms import pagerank_centrality, time_window_bfs
 from app.graph.models import EdgeKind, GraphEdge, GraphNode, NodeKind
 from app.graph.store import GraphStore
 
@@ -48,3 +48,27 @@ def test_time_window_bfs_filters_by_timestamp() -> None:
 def test_time_window_bfs_missing_source() -> None:
     g = nx.DiGraph()
     assert time_window_bfs(g, "missing") == []
+
+
+def test_pagerank_centrality_basic() -> None:
+    g = nx.DiGraph()
+    # hub a points to many leaves -> leaves have inbound, hub high out-degree
+    for i in range(5):
+        g.add_edge("hub", f"leaf_{i}", weight=1.0)
+    scores = pagerank_centrality(g)
+    assert abs(sum(scores.values()) - 1.0) < 1e-6
+    # hub should have non-zero, leaves roughly equal
+    assert "hub" in scores
+    assert all(s > 0 for s in scores.values())
+
+
+def test_pagerank_missing_node_graph() -> None:
+    g = nx.DiGraph()
+    g.add_node("solo")
+    scores = pagerank_centrality(g)
+    assert scores["solo"] == 1.0
+
+
+def test_pagerank_empty_graph() -> None:
+    g = nx.DiGraph()
+    assert pagerank_centrality(g) == {}

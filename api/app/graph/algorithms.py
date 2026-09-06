@@ -86,6 +86,26 @@ def time_window_bfs(
     return order
 
 
+def pagerank_centrality(
+    graph: nx.DiGraph,
+    alpha: float = 0.85,
+    weight: str = "weight",
+) -> dict[str, float]:
+    """Return PageRank scores normalized to sum=1.0. Empty graph -> {}."""
+    if graph.number_of_nodes() == 0:
+        return {}
+    try:
+        scores = nx.pagerank(graph, alpha=alpha, weight=weight)  # type: ignore[no-untyped-call]
+    except Exception:
+        # Fallback for single node without edges
+        n = graph.number_of_nodes()
+        return {str(node): 1.0 / n for node in graph.nodes()}
+    total = sum(scores.values())  # type: ignore[no-untyped-call]
+    if total == 0:
+        return scores  # type: ignore[no-any-return]
+    return {str(k): float(v) / float(total) for k, v in scores.items()}  # type: ignore[no-untyped-call]
+
+
 def detect_clusters(graph: nx.DiGraph, *, min_size: int = 2) -> Iterable[set[str]]:
     """Yield connected components of size >= ``min_size``."""
     for component in nx.weakly_connected_components(graph):
@@ -93,4 +113,10 @@ def detect_clusters(graph: nx.DiGraph, *, min_size: int = 2) -> Iterable[set[str
             yield component
 
 
-__all__ = ["bfs", "weighted_shortest_path", "detect_clusters", "time_window_bfs"]
+__all__ = [
+    "bfs",
+    "weighted_shortest_path",
+    "detect_clusters",
+    "time_window_bfs",
+    "pagerank_centrality",
+]
