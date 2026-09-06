@@ -52,7 +52,7 @@ list of touched files.
 | WP-25 | Reports — PDF / DOCX rendering (Phase 17)                                                          |             | `feature/reports-render`            | 17               | ⬜      |
 | WP-26 | Evidence packaging service — Phase 16                                                               |             | `feature/evidence-package`          | 16               | ⬜      |
 | WP-27 | Case service — full CRUD (Phase 12)                                                                 |             | `feature/case-crud`                 | 12               | ⬜      |
-| WP-28 | Investigator service — auth, RBAC, password reset                                                  |             | `feature/auth-rbac`                 | 25               | ⬜      |
+| WP-28 | Investigator service — auth, RBAC, password reset                                                  | @RAVIKISHAN880 | `feature/auth-rbac`             | 25               | 🟡      |
 | WP-29 | Audit pipeline — middleware + persistence (Phase 25)                                                |             | `feature/audit-pipeline`            | 25               | ⬜      |
 | WP-30 | Demo seed dataset (`data/synthetic/`) + reproducible CSV / parquet generator                       |             | `feature/demo-dataset`              | 21, 22           | ⬜      |
 | WP-31 | Background workers — Celery / RQ setup (Phase 23)                                                  |             | `feature/worker-runtime`            | 23               | ⬜      |

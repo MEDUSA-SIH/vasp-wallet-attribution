@@ -251,3 +251,76 @@ docker compose exec api pytest tests/unit -k test_health
 - **No secrets in source** – environment variables only.
 - **DEMO_MODE first** – new features must respect the offline demo
   pathway (see `app/providers/demo.py`).
+
+## Auth (WP-28)
+
+Auth runs under `/api/v1`. Every endpoint except `login`,
+`password-reset/request` and `password-reset/confirm` requires a Bearer
+JWT. The dependency re-reads the investigator row on each request, so
+role changes / password resets revoke outstanding tokens immediately.
+
+### Create an admin (bootstrap)
+
+There is no public self-registration — create the first admin from the
+CLI against the configured database:
+
+```bash
+cd api
+python -m scripts.create_investigator \
+  --email ops@banner.gov --full-name "Ops Admin" \
+  --role admin --password 'ChangeMe123!'
+```
+
+The script hashes the password with the same `hash_password` used by
+the auth service and is idempotent: re-running with an existing email
+exits non-zero and changes nothing.
+
+### Login
+
+```bash
+curl -s -X POST http://localhost:8000/api/v1/auth/login \
+  -H 'content-type: application/json' \
+  -d '{"email":"ops@banner.gov","password":"ChangeMe123!"}'
+# -> {"access_token":"<jwt>","token_type":"bearer"}
+```
+
+Save the token and use it on protected endpoints:
+
+```bash
+TOKEN='<jwt>'
+curl -s http://localhost:8000/api/v1/auth/me -H "Authorization: Bearer $TOKEN"
+```
+
+### Change password
+
+```bash
+curl -s -X POST http://localhost:8000/api/v1/auth/change-password \
+  -H "Authorization: Bearer $TOKEN" \
+  -H 'content-type: application/json' \
+  -d '{"current_password":"ChangeMe123!","new_password":"NewPass456!"}'
+```
+
+Changing the password bumps `token_version`, so the old JWT is now
+invalid — log in again to get a fresh one.
+
+### Password-reset demo flow
+
+In demo mode (`DEMO_PASSWORD_RESET_ECHO=true`, the local default) the
+raw reset token is echoed in the response, so you can walk the whole
+flow without an email server:
+
+```bash
+# 1. request a reset (echo gives you the raw token)
+curl -s -X POST http://localhost:8000/api/v1/auth/password-reset/request \
+  -H 'content-type: application/json' \
+  -d '{"email":"ops@banner.gov"}'
+# -> {"detail":"if that account exists, a reset token has been sent","reset_token":"<raw-token>"}
+
+# 2. confirm with the token + new password
+curl -s -X POST http://localhost:8000/api/v1/auth/password-reset/confirm \
+  -H 'content-type: application/json' \
+  -d '{"token":"<raw-token>","new_password":"ResetPass789!"}'
+```
+
+With `DEMO_PASSWORD_RESET_ECHO=false` the `reset_token` field is
+`null` and the raw token is never exposed in the HTTP response.

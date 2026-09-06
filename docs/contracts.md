@@ -195,6 +195,15 @@ Each router exposes a stable URL surface under `/api/v1`:
 | POST  | `/api/v1/attribution/run`          | 10    |
 | POST  | `/api/v1/reports/generate`         | 17    |
 | GET   | `/api/v1/admin/settings`           | 25    |
+| POST  | `/api/v1/auth/login`               | 25    |
+| POST  | `/api/v1/auth/logout`              | 25    |
+| GET   | `/api/v1/auth/me`                  | 25    |
+| POST  | `/api/v1/auth/change-password`     | 25    |
+| POST  | `/api/v1/auth/password-reset/request` | 25 |
+| POST  | `/api/v1/auth/password-reset/confirm` | 25 |
+| GET/POST | `/api/v1/admin/investigators`   | 25    |
+| GET/PATCH | `/api/v1/admin/investigators/{id}` | 25 |
+| POST  | `/api/v1/admin/investigators/{id}/reset-password` | 25 |
 
 **Contract:**
 
@@ -209,9 +218,9 @@ Each router exposes a stable URL surface under `/api/v1`:
 Tables registered in `app.db.models.*` are stable:
 
 ```
-investigators, cases, chains, wallets, tokens, blocks, transactions,
-vasps, clusters, cluster_wallets, attributions, risks, investigations,
-reports, api_requests, audit_events
+investigators, password_reset_tokens, cases, chains, wallets, tokens, blocks,
+transactions, vasps, clusters, cluster_wallets, attributions, risks,
+investigations, reports, api_requests, audit_events
 ```
 
 **Contract:**
@@ -241,6 +250,46 @@ from common.types import ChainCode, ConfidenceWeights, InvestigationSeed
 ```
 
 These mirror the `Settings` enum / tuple values and MUST stay in sync.
+
+---
+
+## 11. Auth contract notes
+
+Phase 25 — authentication, RBAC and password-reset behaviour.
+
+**Roles:** every investigator holds exactly one of the canonical roles:
+
+- `investigator` — can use the attribution workflow and read their own
+  profile.
+- `reviewer` — can additionally review / approve investigations.
+- `admin` — full access, including the `/admin/investigators` CRUD and
+  reset-password operations.
+
+An invalid role is rejected at the schema layer (Pydantic `Literal`),
+so the set of roles is stable.
+
+**Bearer JWT:** authenticated requests send
+`Authorization: Bearer <access_token>`. The access token carries three
+claims relevant to authz:
+
+- `sub` — the investigator id (UUID).
+- `role` — the current role at issue time.
+- `token_version` — an integer that starts at `1` and increments on any
+  credential / role change. The dependency re-fetches the investigator
+  from the DB on every request and rejects the token if
+  `token_version` no longer matches, so role changes and password
+  resets revoke previously issued tokens immediately.
+
+**Demo-mode reset-token echo:** when `DEMO_PASSWORD_RESET_ECHO=true`
+(local default), `POST /password-reset/request` returns the raw reset
+token in the response body (`reset_token`). In production the flag MUST
+be `false`, and the token is only delivered out-of-band (email). Reset
+tokens are single-use, hashed at rest, and expire after
+`PASSWORD_RESET_TOKEN_TTL_MINUTES` (default 30).
+
+**Token-version revocation:** bumping `token_version` (change-password,
+admin reset, role/active edits) invalidates all outstanding JWTs for
+that investigator. Logout also rotates the token version server-side.
 
 ---
 
