@@ -11,13 +11,16 @@ each other.
 
 | Branch          | Purpose                                                  |
 |-----------------|----------------------------------------------------------|
-| `main`          | Stable, production-ready. **PR only.**                  |
-| `develop`       | Integration branch for the next release. **PR only.**    |
-| `feature/<x>`   | New functionality. Branched from `develop`.             |
-| `fix/<issue>`   | Bug fixes. Branched from `develop`.                      |
+| `main`          | Stable. **Default branch — all PRs target `main`. PR only.** |
+| `feature/<x>`   | New functionality. Branched from `main`.                |
+| `fix/<issue>`   | Bug fixes. Branched from `main`.                         |
 | `chore/<x>`     | Tooling, docs, refactors with no behaviour change.       |
-| `release/<v>`   | Release prep (version bumps, changelog). From `develop`.|
+| `release/<v>`   | Release prep (version bumps, changelog). From `main`.   |
 | `hotfix/<x>`    | Emergency fix to `main`.                                  |
+
+> **Note:** there is no `develop` branch in this repo. Older revisions of
+> this document mentioned one — ignore them. `main` is the only
+> integration branch.
 
 > **Naming convention:**
 > - `feature/<short-kebab-name>` — e.g. `feature/eth-provider-live`
@@ -25,34 +28,35 @@ each other.
 > - `chore/<short-desc>` — e.g. `chore/update-ruff`
 
 > **Branch protection (recommended GitHub settings):**
-> - `main` and `develop`: require pull request reviews, dismiss stale
+> - `main`: require pull request reviews, dismiss stale
 >   approvals on push, require status checks from the `ci` workflow,
 >   require linear history.
-> - Direct pushes to `main`/`develop` are forbidden.
+> - Direct pushes to `main` are forbidden.
 
 ---
 
 ## 2. Workflow
 
-1. Make sure your `develop` is up to date:
+1. Make sure your `main` is up to date:
    ```bash
    git fetch origin
-   git checkout develop
-   git pull --ff-only origin develop
+   git checkout main
+   git pull --ff-only origin main
    ```
 2. Create your branch:
    ```bash
    git checkout -b feature/<short-name>
    ```
 3. Work in small, focused commits (Conventional Commits below).
-4. Push and open a Pull Request **into `develop`**:
+4. Push and open a Pull Request **into `main`**:
    ```bash
    git push -u origin feature/<short-name>
-   gh pr create --base develop --head feature/<short-name>
+   gh pr create --base main --head feature/<short-name>
    ```
 5. Wait for CI to pass, request review from at least one teammate, address
    feedback, then merge (squash by default).
-6. `develop` is periodically merged into `main` via a release PR.
+6. When your work is complete, flip your row in `docs/work-packages.md`
+   from ⬜ (unclaimed) to ✅ (done) — then commit and push.
 
 ---
 
