@@ -14,7 +14,6 @@ from app.core.exceptions import ProviderError
 from app.providers.base import BlockchainProvider
 from app.providers.canonical import CanonicalTransaction
 
-_DEFAULT_BASE_URL = "https://api.etherscan.io/v2/api"
 _WEI_PER_ETH = Decimal(10) ** 18
 _RATE_LIMIT_MARKERS = ("notok", "rate limit", "max rate", "too many")
 
@@ -30,14 +29,24 @@ class EthereumProvider(BlockchainProvider):
         client: httpx.AsyncClient | None = None,
     ) -> None:
         self._settings = settings or get_settings()
-        base = (self._settings.ethereum_provider_url or _DEFAULT_BASE_URL).rstrip("/")
-        self._base_url = base
+        # No hardcoded URL — must come from env via Settings.ethereum_provider_url
+        # (see .env.example: ETHEREUM_PROVIDER_URL). Tests inject via Settings.
+        base = (self._settings.ethereum_provider_url or "").strip()
+        self._base_url = base.rstrip("/") if base else ""
         self._client = client or httpx.AsyncClient(timeout=10.0)
+
+    def _ensure_configured(self) -> None:
+        if not self._base_url:
+            raise ProviderError(
+                "ethereum_provider_url not configured — set ETHEREUM_PROVIDER_URL / "
+                "ethereum_provider_url in env/.env (e.g. https://api.etherscan.io/v2/api)"
+            )
 
     async def aclose(self) -> None:
         await self._client.aclose()
 
     async def get_balance(self, address: str) -> Decimal:
+        self._ensure_configured()
         data = await self._account_action("balance", address=address, tag="latest")
         try:
             return Decimal(str(data)) / _WEI_PER_ETH
@@ -52,6 +61,7 @@ class EthereumProvider(BlockchainProvider):
         end_time: Any = None,
         limit: int = 100,
     ) -> list[CanonicalTransaction]:
+        self._ensure_configured()
         normals = await self._account_list("txlist", address)
         tokens = await self._account_list("tokentx", address)
         internals = await self._account_list("txlistinternal", address)
@@ -76,6 +86,7 @@ class EthereumProvider(BlockchainProvider):
             yield tx
 
     async def get_block_height(self) -> int:
+        self._ensure_configured()
         params: dict[str, Any] = {"module": "proxy", "action": "eth_blockNumber"}
         self._apply_auth(params)
         try:
@@ -99,6 +110,7 @@ class EthereumProvider(BlockchainProvider):
         return True
 
     async def _account_action(self, action: str, address: str, **extra: Any) -> Any:
+        self._ensure_configured()
         params: dict[str, Any] = {"module": "account", "action": action, "address": address}
         params.update(extra)
         self._apply_auth(params)
@@ -114,6 +126,7 @@ class EthereumProvider(BlockchainProvider):
         return payload
 
     async def _account_list(self, action: str, address: str) -> list[dict[str, Any]]:
+        self._ensure_configured()
         import asyncio
 
         params: dict[str, Any] = {

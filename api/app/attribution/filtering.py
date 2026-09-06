@@ -19,16 +19,22 @@ rather than invent scores.  Filtering never **adds** evidence.
 
 from __future__ import annotations
 
+import networkx as nx
+
 from app.attribution.types import ScoredCandidate
+from app.graph.algorithms import pagerank_centrality
 
 MIN_HOP_AMOUNT = 0.005  # sub-cent hops are noise
 HUB_DEGREE_THRESHOLD = 4  # >4 distinct txs = hub
+HUB_PAGERANK_THRESHOLD = 0.15
 
 
 def apply_filters(
     candidates: list[ScoredCandidate],
     *,
     degree_lookup: DegreeLookup | None = None,
+    pagerank_lookup: PagerankLookup | None = None,
+    pagerank_threshold: float = HUB_PAGERANK_THRESHOLD,
 ) -> list[ScoredCandidate]:
     """Return the filtered candidates (in deterministic order)."""
     seen_paths: set[tuple[str, ...]] = set()
@@ -58,6 +64,12 @@ def apply_filters(
             and cand.terminal_role not in {"vasp", "mixer"}
         ):
             cand.terminal_role = "hub"
+        if (
+            pagerank_lookup is not None
+            and pagerank_lookup.is_hub(cand.terminal_address, threshold=pagerank_threshold)
+            and cand.terminal_role not in {"vasp", "mixer"}
+        ):
+            cand.terminal_role = "hub"
         # Note: we deliberately do NOT drop mixers here — they are kept
         # so the ranking can still surface them as ``insufficient_evidence``
         # terminals. They just won't beat real VASP candidates.
@@ -82,4 +94,26 @@ class DegreeLookup:
         return len(seen)
 
 
-__all__ = ["apply_filters", "DegreeLookup", "MIN_HOP_AMOUNT", "HUB_DEGREE_THRESHOLD"]
+class PagerankLookup:
+    """Wraps pagerank_centrality for reuse."""
+
+    def __init__(self, graph: nx.DiGraph | None = None, *, alpha: float = 0.85) -> None:
+        self._scores: dict[str, float] = {}
+        if graph is not None and graph.number_of_nodes() > 0:
+            self._scores = pagerank_centrality(graph, alpha=alpha)
+
+    def score(self, address: str) -> float:
+        return self._scores.get(address, 0.0)
+
+    def is_hub(self, address: str, threshold: float = HUB_PAGERANK_THRESHOLD) -> bool:
+        return self.score(address) > threshold
+
+
+__all__ = [
+    "HUB_PAGERANK_THRESHOLD",
+    "PagerankLookup",
+    "apply_filters",
+    "DegreeLookup",
+    "HUB_DEGREE_THRESHOLD",
+    "MIN_HOP_AMOUNT",
+]

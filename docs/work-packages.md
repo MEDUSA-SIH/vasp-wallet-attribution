@@ -43,7 +43,7 @@ list of touched files.
 | WP-17 | Attribution Stage H — explainability                                                                 |             | `feature/attr-stage-h`              | 10               | ✅ (folded into WP-35) |
 | WP-35 | Attribution engine core (Stages A–H end-to-end, MVP scoring) — **this stage**                       | @tejas      | `feature/attribution-engine-core`   | 10, 3.3          | ✅      |
 | WP-18 | Graph store — Neo4j backend (replace NetworkX)                                                     |             | `feature/graph-neo4j`               | 6, 11            | ⬜      |
-| WP-19 | Graph algorithms — community detection, page-rank, time-window traversal                           |             | `feature/graph-algos`               | 6, 11            | ⬜      |
+| WP-19 | Graph algorithms — community detection, page-rank, time-window traversal                           | @tejas0111 | `feature/graph-algos`               | 6, 11            | 🟡      |
 | WP-20 | Risk typologies — catalog expansion (mixer, peel-chain, nested VASP, bridge abuse)                 |             | `feature/risk-typologies`           | 14               | ⬜      |
 | WP-21 | Risk alerts — rule engine implementation                                                            |             | `feature/risk-alerts`               | 14               | ⬜      |
 | WP-22 | Cross-chain bridge catalogue expansion + detection (Phase 13)                                       |             | `feature/cross-chain-bridges`       | 13               | ⬜      |
