@@ -19,6 +19,7 @@ from app.db.models import (
     ClusterWallet,
     Investigation,
     Investigator,
+    PasswordResetToken,
     Report,
     Risk,
     Token,
@@ -45,6 +46,7 @@ def test_all_tables_registered() -> None:
         "reports",
         "api_requests",
         "audit_events",
+        "password_reset_tokens",
     }
     assert set(BaseModel.metadata.tables.keys()) == expected
 
@@ -68,5 +70,7 @@ def test_models_instantiable() -> None:
         Report,
         APIRequest,
         AuditEvent,
+        PasswordResetToken,
     ):
         assert cls.__name__
+    assert "token_version" in Investigator.__table__.columns
