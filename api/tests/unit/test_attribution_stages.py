@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from app.attribution.engine import AttributionEngine, AttributionResult
 from app.attribution.explainability import explain
-from app.attribution.filtering import DegreeLookup, apply_filters
+from app.attribution.filtering import DegreeLookup, PagerankLookup, apply_filters
 from app.attribution.ranking import classify_outcome, rank
 from app.attribution.scoring import CONFIDENCE_WEIGHTS, compute_confidence, compute_proximity
 from app.attribution.traversal import hop_sequence, key_tx_hashes, path_integrity, reconstruct
@@ -105,6 +105,28 @@ def test_filtering_demotes_high_degree_to_hub() -> None:
     s = _scored_with("intermediary", hops=2)
     out = apply_filters([s], degree_lookup=DegreeLookup(FakeDataset(10)))
     assert len(out) == 1
+    assert out[0].candidate.terminal_role == "hub"
+
+
+def test_filtering_pagerank_demotes_hub() -> None:
+    import networkx as nx
+
+    from app.graph.models import EdgeKind, GraphEdge, GraphNode, NodeKind
+    from app.graph.store import GraphStore
+
+    store = GraphStore()
+    # Create star: center is hub with high pagerank
+    store.add_node(GraphNode(id="hub", kind=NodeKind.WALLET))
+    for i in range(6):
+        leaf = f"leaf_{i}"
+        store.add_node(GraphNode(id=leaf, kind=NodeKind.WALLET))
+        store.add_edge(GraphEdge(source="hub", target=leaf, kind=EdgeKind.TRANSFER, weight=1.0))
+    # pagerank lookup over store graph
+    plookup = PagerankLookup(store.raw)
+    s = _scored_with("intermediary", hops=2)
+    # force terminal to hub
+    s.candidate.terminal_address = "hub"
+    out = apply_filters([s], pagerank_lookup=plookup, pagerank_threshold=0.1)
     assert out[0].candidate.terminal_role == "hub"
 
 
