@@ -7,6 +7,7 @@ will be backed by Neo4j (see ``docs/phases-mapping.md``).
 from __future__ import annotations
 
 from collections.abc import Iterable
+from datetime import datetime
 from typing import Any
 
 import networkx as nx
@@ -81,9 +82,39 @@ class GraphStore:
             return []
         return [(pred, dict(data)) for pred, data in self._graph.pred[node_id].items()]
 
-    def neighbors_within(self, node_id: str, hops: int) -> set[str]:
-        """Return all nodes reachable within ``hops`` undirected hops."""
-        return set(nx.single_source_shortest_path_length(self._graph, node_id, cutoff=hops).keys())
+    def neighbors_within(
+        self,
+        node_id: str,
+        hops: int,
+        *,
+        start_time: datetime | None = None,
+        end_time: datetime | None = None,
+        directed: bool = False,
+    ) -> set[str]:
+        """Return nodes within hops, optionally filtered by timestamp window."""
+        if node_id not in self._graph:
+            return set()
+        if start_time is None and end_time is None and not directed:
+            # Fast path — original behavior
+            return set(
+                nx.single_source_shortest_path_length(self._graph, node_id, cutoff=hops).keys()
+            )
+        from app.graph.algorithms import time_window_bfs
+
+        return set(
+            time_window_bfs(
+                self._graph,
+                node_id,
+                max_depth=hops,
+                start_time=start_time,
+                end_time=end_time,
+                directed=directed,
+            )
+        )
+
+    def get_subgraph(self, node_ids: set[str]) -> nx.DiGraph:
+        """Return induced subgraph for node_ids (copy)."""
+        return self._graph.subgraph(node_ids).copy()
 
 
 _store_singleton: GraphStore | None = None

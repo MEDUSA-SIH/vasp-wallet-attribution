@@ -7,6 +7,8 @@ return types) is final so the engine can be wired without API churn.
 from __future__ import annotations
 
 from collections.abc import Iterable
+from datetime import datetime
+from typing import Any
 
 import networkx as nx
 
@@ -31,6 +33,59 @@ def weighted_shortest_path(
         return None
 
 
+def time_window_bfs(
+    graph: nx.DiGraph,
+    source: str,
+    max_depth: int = 5,
+    *,
+    start_time: datetime | None = None,
+    end_time: datetime | None = None,
+    directed: bool = True,
+) -> list[str]:
+    """BFS filtered by edge timestamp window and monotonic time."""
+    if source not in graph:
+        return []
+
+    def _in_window(data: dict[str, Any]) -> bool:
+        ts = data.get("timestamp")
+        if ts is None:
+            return True
+        # ts may be datetime or ISO string
+        if isinstance(ts, str):
+            try:
+                ts = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+            except ValueError:
+                return True
+        if start_time is not None and ts < start_time:
+            return False
+        if end_time is not None and ts > end_time:  # noqa: SIM103
+            return False
+        return True
+
+    # Choose traversal base
+    g_view = graph if directed else graph.to_undirected()  # type: ignore[assignment]
+    visited: set[str] = {source}
+    frontier: list[tuple[str, int]] = [(source, 0)]
+    order: list[str] = [source]
+    idx = 0
+    while idx < len(frontier):
+        node, depth = frontier[idx]
+        idx += 1
+        if depth >= max_depth:
+            continue
+        neighbors = g_view.successors(node) if directed else g_view.neighbors(node)  # type: ignore[attr-defined,union-attr]
+        for nbr in list(neighbors):
+            if nbr in visited:
+                continue
+            data = graph.get_edge_data(node, nbr) or graph.get_edge_data(nbr, node) or {}
+            if not _in_window(data):
+                continue
+            visited.add(nbr)
+            order.append(nbr)
+            frontier.append((nbr, depth + 1))
+    return order
+
+
 def detect_clusters(graph: nx.DiGraph, *, min_size: int = 2) -> Iterable[set[str]]:
     """Yield connected components of size >= ``min_size``."""
     for component in nx.weakly_connected_components(graph):
@@ -38,4 +93,4 @@ def detect_clusters(graph: nx.DiGraph, *, min_size: int = 2) -> Iterable[set[str
             yield component
 
 
-__all__ = ["bfs", "weighted_shortest_path", "detect_clusters"]
+__all__ = ["bfs", "weighted_shortest_path", "detect_clusters", "time_window_bfs"]
