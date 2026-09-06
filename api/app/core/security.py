@@ -14,7 +14,7 @@ from __future__ import annotations
 import secrets
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from typing import Annotated, Any
+from typing import Any
 
 from fastapi import Depends, HTTPException, status
 from jose import jwt
@@ -93,7 +93,7 @@ def require_role(role: str):
     from app.dependencies import get_current_investigator
 
     def _dep(
-        investigator: Annotated[AuthenticatedInvestigator, Depends(get_current_investigator)],
+        investigator: AuthenticatedInvestigator = Depends(get_current_investigator),
     ) -> AuthenticatedInvestigator:
         if investigator.role != role and investigator.role != "admin":
             raise HTTPException(

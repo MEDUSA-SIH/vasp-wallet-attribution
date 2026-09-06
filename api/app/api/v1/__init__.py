@@ -3,6 +3,7 @@
 from fastapi import APIRouter
 
 from app.api.v1.admin import router as admin_router
+from app.api.v1.admin_investigators import router as admin_investigators_router
 from app.api.v1.attribution import router as attribution_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.cases import router as cases_router
@@ -18,5 +19,8 @@ api_v1_router.include_router(wallets_router, prefix="/wallets", tags=["wallets"]
 api_v1_router.include_router(attribution_router, prefix="/attribution", tags=["attribution"])
 api_v1_router.include_router(reports_router, prefix="/reports", tags=["reports"])
 api_v1_router.include_router(admin_router, prefix="/admin", tags=["admin"])
+api_v1_router.include_router(
+    admin_investigators_router, prefix="/admin/investigators", tags=["admin"]
+)
 
 __all__ = ["api_v1_router"]
