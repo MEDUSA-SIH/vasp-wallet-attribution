@@ -14,6 +14,7 @@ from app.db.models.chain import Chain
 from app.db.models.cluster import Cluster, ClusterWallet
 from app.db.models.investigation import Investigation
 from app.db.models.investigator import Investigator
+from app.db.models.password_reset_token import PasswordResetToken
 from app.db.models.report import Report
 from app.db.models.risk import Risk
 from app.db.models.token import Token
@@ -38,4 +39,5 @@ __all__ = [
     "Report",
     "APIRequest",
     "AuditEvent",
+    "PasswordResetToken",
 ]

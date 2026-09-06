@@ -4,12 +4,17 @@ from __future__ import annotations
 
 from collections.abc import AsyncGenerator
 from typing import Annotated
+from uuid import UUID
 
 from fastapi import Depends, HTTPException, Request, status
+from fastapi.security import OAuth2PasswordBearer
+from jose.exceptions import JWTError
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import Settings, get_settings
-from app.core.security import AuthenticatedInvestigator, require_role
+from app.core.security import AuthenticatedInvestigator, decode_access_token
+from app.db.models.investigator import Investigator
 from app.providers.base import BlockchainProvider, ProviderRegistry
 
 SettingsDep = Annotated[Settings, Depends(get_settings)]
@@ -58,26 +63,71 @@ async def get_provider_for_chain(
         ) from exc
 
 
-async def get_current_investigator_stub() -> AuthenticatedInvestigator:
-    """Placeholder until Phase 25 auth is implemented.
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{get_settings().api_prefix}/auth/login")
 
-    The real implementation will validate a JWT and load the investigator.
-    """
+
+async def _investigator_from_token(
+    token: str, session: AsyncSession
+) -> AuthenticatedInvestigator | None:
+    """Decode a JWT and load the matching active investigator, or return None."""
+    try:
+        payload = decode_access_token(token)
+    except JWTError:
+        return None
+    subject = payload.get("sub")
+    token_version = payload.get("token_version")
+    if subject is None or token_version is None:
+        return None
+    try:
+        investigator_id = UUID(subject)
+    except ValueError:
+        return None
+    result = await session.execute(select(Investigator).where(Investigator.id == investigator_id))
+    inv = result.scalar_one_or_none()
+    if inv is None or not inv.is_active:
+        return None
+    if int(inv.token_version) != int(token_version):
+        return None
     return AuthenticatedInvestigator(
-        id="00000000-0000-0000-0000-000000000000",
-        email="scaffold@example.com",
-        role="analyst",
+        id=str(inv.id),
+        email=inv.email,
+        role=inv.role,
+        agency=inv.agency,
     )
 
 
-CurrentInvestigatorDep = Annotated[
-    AuthenticatedInvestigator, Depends(get_current_investigator_stub)
+async def get_current_investigator(
+    token: Annotated[str, Depends(oauth2_scheme)],
+    session: SessionDep,
+) -> AuthenticatedInvestigator:
+    """Resolve the Bearer JWT to a live, active investigator or 401."""
+    auth = await _investigator_from_token(token, session)
+    if auth is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return auth
+
+
+async def get_optional_current_investigator(
+    request: Request, session: SessionDep
+) -> AuthenticatedInvestigator | None:
+    """Like get_current_investigator but returns None when no valid token is present."""
+    header = request.headers.get("Authorization", "")
+    if not header.lower().startswith("bearer "):
+        return None
+    token = header[7:].strip()
+    if not token:
+        return None
+    return await _investigator_from_token(token, session)
+
+
+CurrentInvestigatorDep = Annotated[AuthenticatedInvestigator, Depends(get_current_investigator)]
+OptionalInvestigatorDep = Annotated[
+    AuthenticatedInvestigator | None, Depends(get_optional_current_investigator)
 ]
-
-
-def require_role_stub(role: str):
-    """Factory that returns a dependency enforcing a role."""
-    return require_role(role)
 
 
 __all__ = [
@@ -86,6 +136,6 @@ __all__ = [
     "RedisDep",
     "ProviderRegistryDep",
     "CurrentInvestigatorDep",
-    "require_role_stub",
+    "OptionalInvestigatorDep",
     "get_provider_for_chain",
 ]
