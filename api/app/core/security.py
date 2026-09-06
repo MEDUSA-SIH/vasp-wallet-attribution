@@ -11,6 +11,7 @@ kept minimal so subsequent phases can plug in concrete handlers.
 
 from __future__ import annotations
 
+import secrets
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import Any
@@ -42,6 +43,22 @@ def hash_password(plain: str) -> str:
 def verify_password(plain: str, hashed: str) -> bool:
     """Verify a plaintext password against a bcrypt hash."""
     return _pwd_context.verify(plain, hashed)
+
+
+def create_password_reset_token() -> tuple[str, str]:
+    """Return (raw_token, bcrypt_hash). The raw value is shown to the requester once."""
+    raw = secrets.token_urlsafe(48)
+    return raw, _pwd_context.hash(raw)
+
+
+def hash_reset_token(raw: str) -> str:
+    """Hash a raw reset token for storage."""
+    return _pwd_context.hash(raw)
+
+
+def verify_reset_token(raw: str, token_hash: str) -> bool:
+    """Return True if the raw token matches the stored hash."""
+    return _pwd_context.verify(raw, token_hash)
 
 
 def create_access_token(
@@ -91,5 +108,8 @@ __all__ = [
     "verify_password",
     "create_access_token",
     "decode_access_token",
+    "create_password_reset_token",
+    "hash_reset_token",
+    "verify_reset_token",
     "require_role",
 ]

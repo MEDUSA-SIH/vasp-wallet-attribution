@@ -40,6 +40,8 @@ class Settings(BaseSettings):
     secret_key: str = "change-me"
     jwt_algorithm: str = "HS256"
     jwt_expires_minutes: int = 60
+    password_reset_token_ttl_minutes: int = 30
+    demo_password_reset_echo: bool = True
 
     # ---- Database ------------------------------------------------------------
     postgres_user: str = "sih26182"
