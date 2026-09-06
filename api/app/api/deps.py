@@ -2,6 +2,7 @@
 
 from app.dependencies import (
     CurrentInvestigatorDep,
+    OptionalInvestigatorDep,
     RedisDep,
     SessionDep,
     SettingsDep,
@@ -14,6 +15,7 @@ __all__ = [
     "SessionDep",
     "RedisDep",
     "CurrentInvestigatorDep",
+    "OptionalInvestigatorDep",
     "get_db_session",
     "get_redis",
 ]

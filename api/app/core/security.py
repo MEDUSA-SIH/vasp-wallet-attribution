@@ -14,9 +14,9 @@ from __future__ import annotations
 import secrets
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from typing import Any
+from typing import Annotated, Any
 
-from fastapi import HTTPException, status
+from fastapi import Depends, HTTPException, status
 from jose import jwt
 from passlib.context import CryptContext
 
@@ -90,8 +90,11 @@ def decode_access_token(token: str, *, settings: Settings | None = None) -> dict
 
 def require_role(role: str):
     """Build a dependency that enforces the given role."""
+    from app.dependencies import get_current_investigator
 
-    async def _dep(investigator: AuthenticatedInvestigator) -> AuthenticatedInvestigator:
+    def _dep(
+        investigator: Annotated[AuthenticatedInvestigator, Depends(get_current_investigator)],
+    ) -> AuthenticatedInvestigator:
         if investigator.role != role and investigator.role != "admin":
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
