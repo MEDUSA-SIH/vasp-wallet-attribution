@@ -26,7 +26,7 @@ list of touched files.
 |-------|----------------------------------------------------------------------------------------------------|-------------|-------------------------------------|------------------|--------|
 | WP-01 | Scaffold (FastAPI / Docker / Alembic / docs)                                                       | @tejas      | `feat/initial-monorepo-scaffold`    | 25, 24, 8        | ✅      |
 | WP-02 | Team-collab base (CI / pre-commit / contracts / docs)                                               | @tejas      | `feat/team-collab-base`             | 24               | ✅      |
-| WP-03 | Bitcoin provider (live API integration)                                                            | @Rajat-byte1210 | `feature/bitcoin-live`              | 20               | 🟡      |
+| WP-03 | Bitcoin provider (live API integration)                                                            | @Rajat-byte1210 | `feature/btc-provider-live`              | 20               | 🟡      |
 | WP-04 | Ethereum provider (live API integration)                                                           | @Rajat-byte1210 | `feature/eth-provider-live`         | 20               | ✅      |
 | WP-05 | TRON provider (live API integration)                                                               |             | `feature/tron-provider-live`        | 20               | ⬜      |
 | WP-06 | BNB Chain provider (live API integration)                                                          |             | `feature/bnb-provider-live`         | 20               | ⬜      |
