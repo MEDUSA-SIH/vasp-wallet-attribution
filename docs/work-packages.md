@@ -14,8 +14,7 @@ list of touched files.
 ## Status legend
 
 - ⬜ **Unclaimed** – pick it up.
-- 🟡 **In progress** – branch is open.
-- ✅ **Merged into develop** – branch was merged and deleted.
+- ✅ **Done** – code is committed and pushed to the WP branch.
 - 🚫 **Blocked** – waiting on something.
 
 ---
@@ -26,7 +25,7 @@ list of touched files.
 |-------|----------------------------------------------------------------------------------------------------|-------------|-------------------------------------|------------------|--------|
 | WP-01 | Scaffold (FastAPI / Docker / Alembic / docs)                                                       | @tejas      | `feat/initial-monorepo-scaffold`    | 25, 24, 8        | ✅      |
 | WP-02 | Team-collab base (CI / pre-commit / contracts / docs)                                               | @tejas      | `feat/team-collab-base`             | 24               | ✅      |
-| WP-03 | Bitcoin provider (live API integration)                                                            |             | `feature/btc-provider-live`         | 20               | ⬜      |
+| WP-03 | Bitcoin provider (live API integration)                                                            | @Rajat-byte1210 | `feature/btc-provider-live`              | 20               | ✅      |
 | WP-04 | Ethereum provider (live API integration)                                                           | @Rajat-byte1210 | `feature/eth-provider-live`         | 20               | ✅      |
 | WP-05 | TRON provider (live API integration)                                                               |             | `feature/tron-provider-live`        | 20               | ⬜      |
 | WP-06 | BNB Chain provider (live API integration)                                                          |             | `feature/bnb-provider-live`         | 20               | ⬜      |
@@ -43,7 +42,7 @@ list of touched files.
 | WP-17 | Attribution Stage H — explainability                                                                 |             | `feature/attr-stage-h`              | 10               | ✅ (folded into WP-35) |
 | WP-35 | Attribution engine core (Stages A–H end-to-end, MVP scoring) — **this stage**                       | @tejas      | `feature/attribution-engine-core`   | 10, 3.3          | ✅      |
 | WP-18 | Graph store — Neo4j backend (replace NetworkX)                                                     |             | `feature/graph-neo4j`               | 6, 11            | ⬜      |
-| WP-19 | Graph algorithms — community detection, page-rank, time-window traversal                           |             | `feature/graph-algos`               | 6, 11            | ⬜      |
+| WP-19 | Graph algorithms — community detection, page-rank, time-window traversal                           | @tejas0111 | `feature/graph-algos`               | 6, 11            | ✅      |
 | WP-20 | Risk typologies — catalog expansion (mixer, peel-chain, nested VASP, bridge abuse)                 |             | `feature/risk-typologies`           | 14               | ⬜      |
 | WP-21 | Risk alerts — rule engine implementation                                                            |             | `feature/risk-alerts`               | 14               | ⬜      |
 | WP-22 | Cross-chain bridge catalogue expansion + detection (Phase 13)                                       |             | `feature/cross-chain-bridges`       | 13               | ⬜      |
@@ -82,22 +81,19 @@ list of touched files.
 ## How to claim a WP
 
 1. Edit this file – add your GitHub handle and the branch you created.
-2. Move the status to 🟡.
-3. Open the PR into `develop`.
-4. When merged, move the status to ✅.
+2. When your work package is complete, move the status to ✅.
+3. Commit and push, then open the PR into `main`.
 
 ```diff
 - WP-03 | Bitcoin provider (live API integration) |  | `feature/btc-provider-live` | 20 | ⬜
-+ WP-03 | Bitcoin provider (live API integration) | @your-handle | `feature/btc-provider-live` | 20 | 🟡
++ WP-03 | Bitcoin provider (live API integration) | @your-handle | `feature/btc-provider-live` | 20 | ✅
 ```
 
 ---
 
 ## Current team base
 
-**`main`** and **`develop`** are at commit `7a7bf50` (Day 1 stable base).
-
-Both branches include:
+**`main`** is the only integration branch (there is no `develop` in this repo).
 - Stage 0 — monorepo scaffold (FastAPI / Docker / Alembic)
 - Stage 0.5 — team collab (CI / pre-commit / contracts)
 - Stage 1 — synthetic dataset + DemoBlockchainProvider + smoke endpoint

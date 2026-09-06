@@ -78,7 +78,8 @@ class Settings(BaseSettings):
     provider_demo_enabled: bool = True
 
     blockchain_api_key: str = ""
-    ethereum_provider_url: str = ""
+    ethereum_provider_url: str = ""  # Etherscan V2, e.g. https://api.etherscan.io/v2/api
+    eth_rpc_url: str = ""  # direct JSON-RPC, e.g. https://ethereum-mainnet.gateway.tatum.io
     bitcoin_provider_url: str = ""
     tron_provider_url: str = ""
     bnb_provider_url: str = ""

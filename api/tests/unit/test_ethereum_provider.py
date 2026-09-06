@@ -138,6 +138,7 @@ async def test_upstream_error_raises_provider_error() -> None:
         demo_mode=False,
         provider_ethereum_enabled=True,
         blockchain_api_key="test-key",
+        ethereum_provider_url="https://api.etherscan.io/v2/api",
     )
     client = httpx.AsyncClient(
         transport=httpx.MockTransport(_fail), base_url="https://api.etherscan.io"
@@ -170,7 +171,12 @@ async def test_rate_limit_retries_once_then_returns() -> None:
             )
         return _mock_handler(request)
 
-    settings = Settings(demo_mode=False, provider_ethereum_enabled=True, blockchain_api_key="k")
+    settings = Settings(
+        demo_mode=False,
+        provider_ethereum_enabled=True,
+        blockchain_api_key="k",
+        ethereum_provider_url="https://api.etherscan.io/v2/api",
+    )
     client = httpx.AsyncClient(
         transport=httpx.MockTransport(_flaky), base_url="https://api.etherscan.io"
     )
