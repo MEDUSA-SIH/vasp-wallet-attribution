@@ -106,6 +106,68 @@ def pagerank_centrality(
     return {str(k): float(v) / float(total) for k, v in scores.items()}  # type: ignore[no-untyped-call]
 
 
+def temporal_shortest_path(
+    graph: nx.DiGraph,
+    source: str,
+    target: str,
+    *,
+    weight: str = "weight",
+) -> list[str] | None:
+    """Dijkstra filtered to non-decreasing timestamps. Returns None if violated."""
+    if source not in graph or target not in graph:
+        return None
+
+    def _ts(data: dict[str, Any]) -> datetime | None:
+        ts = data.get("timestamp")
+        if ts is None:
+            return None
+        if isinstance(ts, str):
+            try:
+                return datetime.fromisoformat(ts.replace("Z", "+00:00"))
+            except ValueError:
+                return None
+        return ts  # type: ignore[return-value]
+
+    # Try direct dijkstra first, then validate temporal
+    try:
+        path = nx.dijkstra_path(graph, source, target, weight=weight)  # type: ignore[no-untyped-call]
+    except (nx.NetworkXNoPath, nx.NodeNotFound):
+        return None
+    # Validate monotonic
+    times: list[datetime] = []
+    for u, v in zip(path, path[1:], strict=False):
+        data = graph.get_edge_data(u, v) or {}
+        t = _ts(data)  # type: ignore[arg-type]
+        if t is not None:
+            times.append(t)
+    for i in range(1, len(times)):
+        if times[i] < times[i - 1]:
+            # Invalid — try to find alternative via brute force for small graphs
+            # Fallback: enumerate paths by BFS order and pick cheapest valid
+            best: list[str] | None = None
+            best_cost = float("inf")
+            for cand in nx.all_simple_paths(graph, source, target, cutoff=5):  # type: ignore[no-untyped-call]
+                # check temporal
+                valid = True
+                cand_times: list[datetime] = []
+                cost = 0.0
+                for a, b in zip(cand, cand[1:], strict=False):
+                    d = graph.get_edge_data(a, b) or {}  # type: ignore[assignment]
+                    t2 = _ts(d)  # type: ignore[arg-type]
+                    if t2 is not None:
+                        cand_times.append(t2)
+                    cost += float(d.get(weight, 1.0))  # type: ignore[arg-type]
+                for j in range(1, len(cand_times)):
+                    if cand_times[j] < cand_times[j - 1]:
+                        valid = False
+                        break
+                if valid and cost < best_cost:
+                    best_cost = cost
+                    best = cand  # type: ignore[assignment]
+            return best
+    return path
+
+
 def detect_clusters(graph: nx.DiGraph, *, min_size: int = 2) -> Iterable[set[str]]:
     """Yield connected components of size >= ``min_size``."""
     for component in nx.weakly_connected_components(graph):
@@ -119,4 +181,5 @@ __all__ = [
     "detect_clusters",
     "time_window_bfs",
     "pagerank_centrality",
+    "temporal_shortest_path",
 ]

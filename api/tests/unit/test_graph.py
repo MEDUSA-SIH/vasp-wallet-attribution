@@ -6,7 +6,7 @@ from datetime import UTC, datetime
 
 import networkx as nx
 
-from app.graph.algorithms import pagerank_centrality, time_window_bfs
+from app.graph.algorithms import pagerank_centrality, temporal_shortest_path, time_window_bfs
 from app.graph.models import EdgeKind, GraphEdge, GraphNode, NodeKind
 from app.graph.store import GraphStore
 
@@ -72,3 +72,21 @@ def test_pagerank_missing_node_graph() -> None:
 def test_pagerank_empty_graph() -> None:
     g = nx.DiGraph()
     assert pagerank_centrality(g) == {}
+
+
+def test_temporal_shortest_path_enforces_time_order() -> None:
+    g = nx.DiGraph()
+    # a->b at t=10, b->c at t=5 (goes back in time) -> invalid
+    g.add_edge("a", "b", weight=1.0, timestamp=datetime(2024, 1, 10, tzinfo=UTC))
+    g.add_edge("b", "c", weight=1.0, timestamp=datetime(2024, 1, 5, tzinfo=UTC))
+    g.add_edge("a", "c", weight=5.0, timestamp=datetime(2024, 1, 11, tzinfo=UTC))
+    # temporal path should pick a->c direct (5.0) over invalid a->b->c
+    path = temporal_shortest_path(g, "a", "c")
+    assert path == ["a", "c"]
+
+
+def test_temporal_shortest_path_no_path() -> None:
+    g = nx.DiGraph()
+    g.add_edge("a", "b", weight=1.0)
+    assert temporal_shortest_path(g, "a", "missing") is None
+    assert temporal_shortest_path(g, "missing", "b") is None
