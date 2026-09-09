@@ -29,7 +29,7 @@ list of touched files.
 | WP-04 | Ethereum provider (live API integration)                                                           | @Rajat-byte1210 | `feature/eth-provider-live`         | 20               | ✅      |
 | WP-05 | TRON provider (live API integration)                                                               | @Rajat-byte1210 | `feature/tron-provider-live`        | 20               | ✅      |
 | WP-06 | BNB Chain provider (live API integration)                                                          | @Rajat-byte1210 | `feature/bnb-provider-live`         | 20               | ✅      |
-| WP-07 | Solana provider (live API integration)                                                              |             | `feature/solana-provider-live`      | 20               | ⬜      |
+| WP-07 | Solana provider (live API integration)                                                              |             | `feature/solana-provider-live`      | 20               | ✅      |
 | WP-08 | Polygon provider (live API integration)                                                             |             | `feature/polygon-provider-live`     | 20               | ⬜      |
 | WP-09 | DemoBlockchainProvider — synthetic dataset loader (CSV → CanonicalTransaction)                     |             | `feature/demo-seed-loader`          | 21, 22           | ⬜      |
 | WP-10 | Attribution Stage A — discovery (seed resolution against DB)                                        |             | `feature/attr-stage-a`              | 10               | ✅ (folded into WP-35) |
