@@ -36,7 +36,7 @@ def build_default_provider_registry(settings: Settings | None = None) -> Provide
 
     Honours ``settings.demo_mode``:
       - ``True``  → register one ``DemoBlockchainProvider`` per chain.
-      - ``False`` → register live providers where enabled (WP-03 bitcoin, WP-04 ethereum),
+      - ``False`` → register live providers where enabled (WP-03 bitcoin, WP-04 ethereum, WP-05 tron, WP-06 bnb),
         otherwise per-chain stubs (raise on use).
 
     The function is pure: calling it twice returns two distinct
@@ -63,6 +63,10 @@ def build_default_provider_registry(settings: Settings | None = None) -> Provide
                 registry.register(EthereumProvider(settings=settings))
             elif _code == "bitcoin" and settings.provider_bitcoin_enabled:
                 registry.register(BitcoinProvider(settings=settings))
+            elif _code == "tron" and settings.provider_tron_enabled:
+                registry.register(TronProvider(settings=settings))
+            elif _code == "bnb" and settings.provider_bnb_enabled:
+                registry.register(BnbProvider(settings=settings))
             else:
                 registry.register(cls())
 
